@@ -6,7 +6,7 @@ export const Body_login_login_access_tokenSchema = {
             anyOf: [
                 {
                     type: 'string',
-                    pattern: 'password'
+                    pattern: '^password$'
                 },
                 {
                     type: 'null'
@@ -20,6 +20,7 @@ export const Body_login_login_access_tokenSchema = {
         },
         password: {
             type: 'string',
+            format: 'password',
             title: 'Password'
         },
         scope: {
@@ -47,12 +48,141 @@ export const Body_login_login_access_tokenSchema = {
                     type: 'null'
                 }
             ],
+            format: 'password',
             title: 'Client Secret'
         }
     },
     type: 'object',
     required: ['username', 'password'],
     title: 'Body_login-login_access_token'
+} as const;
+
+export const BookingCreateSchema = {
+    properties: {
+        check_in: {
+            type: 'string',
+            format: 'date',
+            title: 'Check In'
+        },
+        check_out: {
+            type: 'string',
+            format: 'date',
+            title: 'Check Out'
+        },
+        user_id: {
+            type: 'integer',
+            title: 'User Id'
+        },
+        room_id: {
+            type: 'integer',
+            title: 'Room Id'
+        }
+    },
+    type: 'object',
+    required: ['check_in', 'check_out', 'user_id', 'room_id'],
+    title: 'BookingCreate',
+    description: 'Schema para crear una reserva.'
+} as const;
+
+export const BookingReadSchema = {
+    properties: {
+        check_in: {
+            type: 'string',
+            format: 'date',
+            title: 'Check In'
+        },
+        check_out: {
+            type: 'string',
+            format: 'date',
+            title: 'Check Out'
+        },
+        status: {
+            '$ref': '#/components/schemas/BookingStatus',
+            default: 'pending'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        user_id: {
+            type: 'integer',
+            title: 'User Id'
+        },
+        room_id: {
+            type: 'integer',
+            title: 'Room Id'
+        }
+    },
+    type: 'object',
+    required: ['check_in', 'check_out', 'id', 'user_id', 'room_id'],
+    title: 'BookingRead'
+} as const;
+
+export const BookingStatusSchema = {
+    type: 'string',
+    enum: ['pending', 'confirmed', 'cancelled', 'no_show', 'checked_in', 'checked_out'],
+    title: 'BookingStatus',
+    description: 'Estados posibles de una reserva.'
+} as const;
+
+export const BookingUpdateSchema = {
+    properties: {
+        check_in: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Check In'
+        },
+        check_out: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Check Out'
+        },
+        room_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Room Id'
+        },
+        status: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/BookingStatus'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        }
+    },
+    type: 'object',
+    title: 'BookingUpdate',
+    description: 'Schema para actualizar una reserva.'
+} as const;
+
+export const DocumentTypeSchema = {
+    type: 'string',
+    enum: ['Cédula', 'Tarjeta de identidad', 'Cédula de extranjería', 'Pasaporte'],
+    title: 'DocumentType'
 } as const;
 
 export const HTTPValidationErrorSchema = {
@@ -67,119 +197,6 @@ export const HTTPValidationErrorSchema = {
     },
     type: 'object',
     title: 'HTTPValidationError'
-} as const;
-
-export const ItemCreateSchema = {
-    properties: {
-        title: {
-            type: 'string',
-            maxLength: 255,
-            minLength: 1,
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    required: ['title'],
-    title: 'ItemCreate'
-} as const;
-
-export const ItemPublicSchema = {
-    properties: {
-        title: {
-            type: 'string',
-            maxLength: 255,
-            minLength: 1,
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        },
-        id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Id'
-        },
-        owner_id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Owner Id'
-        }
-    },
-    type: 'object',
-    required: ['title', 'id', 'owner_id'],
-    title: 'ItemPublic'
-} as const;
-
-export const ItemUpdateSchema = {
-    properties: {
-        title: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255,
-                    minLength: 1
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    title: 'ItemUpdate'
-} as const;
-
-export const ItemsPublicSchema = {
-    properties: {
-        data: {
-            items: {
-                '$ref': '#/components/schemas/ItemPublic'
-            },
-            type: 'array',
-            title: 'Data'
-        },
-        count: {
-            type: 'integer',
-            title: 'Count'
-        }
-    },
-    type: 'object',
-    required: ['data', 'count'],
-    title: 'ItemsPublic'
 } as const;
 
 export const MessageSchema = {
@@ -202,7 +219,7 @@ export const NewPasswordSchema = {
         },
         new_password: {
             type: 'string',
-            maxLength: 128,
+            maxLength: 40,
             minLength: 8,
             title: 'New Password'
         }
@@ -222,9 +239,25 @@ export const PrivateUserCreateSchema = {
             type: 'string',
             title: 'Password'
         },
-        full_name: {
+        name: {
             type: 'string',
-            title: 'Full Name'
+            title: 'Name'
+        },
+        last_name: {
+            type: 'string',
+            title: 'Last Name'
+        },
+        document_type: {
+            type: 'string',
+            title: 'Document Type'
+        },
+        document_number: {
+            type: 'string',
+            title: 'Document Number'
+        },
+        phone_number: {
+            type: 'string',
+            title: 'Phone Number'
         },
         is_verified: {
             type: 'boolean',
@@ -233,8 +266,132 @@ export const PrivateUserCreateSchema = {
         }
     },
     type: 'object',
-    required: ['email', 'password', 'full_name'],
+    required: ['email', 'password', 'name', 'last_name', 'document_type', 'document_number', 'phone_number'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const RoomCreateSchema = {
+    properties: {
+        room_number: {
+            type: 'integer',
+            minimum: 1,
+            title: 'Room Number'
+        },
+        is_available: {
+            type: 'boolean',
+            title: 'Is Available',
+            default: true
+        },
+        room_type_id: {
+            type: 'integer',
+            title: 'Room Type Id'
+        }
+    },
+    type: 'object',
+    required: ['room_number', 'room_type_id'],
+    title: 'RoomCreate'
+} as const;
+
+export const RoomReadSchema = {
+    properties: {
+        room_number: {
+            type: 'integer',
+            minimum: 1,
+            title: 'Room Number'
+        },
+        is_available: {
+            type: 'boolean',
+            title: 'Is Available',
+            default: true
+        },
+        room_type_id: {
+            type: 'integer',
+            title: 'Room Type Id'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['room_number', 'room_type_id', 'id'],
+    title: 'RoomRead'
+} as const;
+
+export const RoomTypeCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            maxLength: 500,
+            title: 'Description'
+        },
+        capacity: {
+            type: 'integer',
+            maximum: 50,
+            minimum: 1,
+            title: 'Capacity'
+        },
+        amenities: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Amenities'
+        },
+        base_price: {
+            type: 'number',
+            minimum: 0,
+            title: 'Base Price'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'capacity', 'base_price'],
+    title: 'RoomTypeCreate'
+} as const;
+
+export const RoomTypeReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            maxLength: 500,
+            title: 'Description'
+        },
+        capacity: {
+            type: 'integer',
+            maximum: 50,
+            minimum: 1,
+            title: 'Capacity'
+        },
+        amenities: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Amenities'
+        },
+        base_price: {
+            type: 'number',
+            minimum: 0,
+            title: 'Base Price'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'capacity', 'base_price', 'id'],
+    title: 'RoomTypeRead'
 } as const;
 
 export const TokenSchema = {
@@ -258,13 +415,13 @@ export const UpdatePasswordSchema = {
     properties: {
         current_password: {
             type: 'string',
-            maxLength: 128,
+            maxLength: 40,
             minLength: 8,
             title: 'Current Password'
         },
         new_password: {
             type: 'string',
-            maxLength: 128,
+            maxLength: 40,
             minLength: 8,
             title: 'New Password'
         }
@@ -292,27 +449,51 @@ export const UserCreateSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        last_name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Last Name'
+        },
+        document_type: {
+            '$ref': '#/components/schemas/DocumentType'
+        },
+        document_number: {
+            type: 'string',
+            maxLength: 50,
+            title: 'Document Number'
+        },
+        phone_number: {
+            type: 'string',
+            maxLength: 10,
+            minLength: 10,
+            title: 'Phone Number'
+        },
+        birth_date: {
             anyOf: [
                 {
                     type: 'string',
-                    maxLength: 255
+                    format: 'date'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'Birth Date'
         },
         password: {
             type: 'string',
-            maxLength: 128,
+            maxLength: 40,
             minLength: 8,
             title: 'Password'
         }
     },
     type: 'object',
-    required: ['email', 'password'],
+    required: ['email', 'name', 'last_name', 'document_type', 'document_number', 'phone_number', 'password'],
     title: 'UserCreate'
 } as const;
 
@@ -334,26 +515,49 @@ export const UserPublicSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        last_name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Last Name'
+        },
+        document_type: {
+            '$ref': '#/components/schemas/DocumentType'
+        },
+        document_number: {
+            type: 'string',
+            maxLength: 50,
+            title: 'Document Number'
+        },
+        phone_number: {
+            type: 'string',
+            maxLength: 10,
+            minLength: 10,
+            title: 'Phone Number'
+        },
+        birth_date: {
             anyOf: [
                 {
                     type: 'string',
-                    maxLength: 255
+                    format: 'date'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'Birth Date'
         },
         id: {
-            type: 'string',
-            format: 'uuid',
+            type: 'integer',
             title: 'Id'
         }
     },
     type: 'object',
-    required: ['email', 'id'],
+    required: ['email', 'name', 'last_name', 'document_type', 'document_number', 'phone_number', 'id'],
     title: 'UserPublic'
 } as const;
 
@@ -367,25 +571,49 @@ export const UserRegisterSchema = {
         },
         password: {
             type: 'string',
-            maxLength: 128,
+            maxLength: 40,
             minLength: 8,
             title: 'Password'
         },
-        full_name: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        last_name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Last Name'
+        },
+        document_type: {
+            '$ref': '#/components/schemas/DocumentType'
+        },
+        document_number: {
+            type: 'string',
+            maxLength: 50,
+            title: 'Document Number'
+        },
+        phone_number: {
+            type: 'string',
+            maxLength: 10,
+            minLength: 10,
+            title: 'Phone Number'
+        },
+        birth_date: {
             anyOf: [
                 {
                     type: 'string',
-                    maxLength: 255
+                    format: 'date'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'Birth Date'
         }
     },
     type: 'object',
-    required: ['email', 'password'],
+    required: ['email', 'password', 'name', 'last_name', 'document_type', 'document_number', 'phone_number'],
     title: 'UserRegister'
 } as const;
 
@@ -405,16 +633,28 @@ export const UserUpdateSchema = {
             title: 'Email'
         },
         is_active: {
-            type: 'boolean',
-            title: 'Is Active',
-            default: true
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Is Active'
         },
         is_superuser: {
-            type: 'boolean',
-            title: 'Is Superuser',
-            default: false
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Is Superuser'
         },
-        full_name: {
+        name: {
             anyOf: [
                 {
                     type: 'string',
@@ -424,13 +664,72 @@ export const UserUpdateSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
+        },
+        document_type: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/DocumentType'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        document_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Document Number'
+        },
+        phone_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 10,
+                    minLength: 10
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Phone Number'
+        },
+        birth_date: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Birth Date'
         },
         password: {
             anyOf: [
                 {
                     type: 'string',
-                    maxLength: 128,
+                    maxLength: 40,
                     minLength: 8
                 },
                 {
@@ -446,7 +745,7 @@ export const UserUpdateSchema = {
 
 export const UserUpdateMeSchema = {
     properties: {
-        full_name: {
+        name: {
             anyOf: [
                 {
                     type: 'string',
@@ -456,7 +755,19 @@ export const UserUpdateMeSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Full Name'
+            title: 'Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
         },
         email: {
             anyOf: [
@@ -470,6 +781,31 @@ export const UserUpdateMeSchema = {
                 }
             ],
             title: 'Email'
+        },
+        phone_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 10,
+                    minLength: 10
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Phone Number'
+        },
+        birth_date: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Birth Date'
         }
     },
     type: 'object',

@@ -9,30 +9,44 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+/**
+ * Schema para crear una reserva.
+ */
+export type BookingCreate = {
+    check_in: string;
+    check_out: string;
+    user_id: number;
+    room_id: number;
+};
+
+export type BookingRead = {
+    check_in: string;
+    check_out: string;
+    status?: BookingStatus;
+    id: string;
+    user_id: number;
+    room_id: number;
+};
+
+/**
+ * Estados posibles de una reserva.
+ */
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'no_show' | 'checked_in' | 'checked_out';
+
+/**
+ * Schema para actualizar una reserva.
+ */
+export type BookingUpdate = {
+    check_in?: (string | null);
+    check_out?: (string | null);
+    room_id?: (number | null);
+    status?: (BookingStatus | null);
+};
+
+export type DocumentType = 'Cédula' | 'Tarjeta de identidad' | 'Cédula de extranjería' | 'Pasaporte';
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
-};
-
-export type ItemCreate = {
-    title: string;
-    description?: (string | null);
-};
-
-export type ItemPublic = {
-    title: string;
-    description?: (string | null);
-    id: string;
-    owner_id: string;
-};
-
-export type ItemsPublic = {
-    data: Array<ItemPublic>;
-    count: number;
-};
-
-export type ItemUpdate = {
-    title?: (string | null);
-    description?: (string | null);
 };
 
 export type Message = {
@@ -47,8 +61,42 @@ export type NewPassword = {
 export type PrivateUserCreate = {
     email: string;
     password: string;
-    full_name: string;
+    name: string;
+    last_name: string;
+    document_type: string;
+    document_number: string;
+    phone_number: string;
     is_verified?: boolean;
+};
+
+export type RoomCreate = {
+    room_number: number;
+    is_available?: boolean;
+    room_type_id: number;
+};
+
+export type RoomRead = {
+    room_number: number;
+    is_available?: boolean;
+    room_type_id: number;
+    id: number;
+};
+
+export type RoomTypeCreate = {
+    name: string;
+    description: string;
+    capacity: number;
+    amenities?: Array<(string)>;
+    base_price: number;
+};
+
+export type RoomTypeRead = {
+    name: string;
+    description: string;
+    capacity: number;
+    amenities?: Array<(string)>;
+    base_price: number;
+    id: number;
 };
 
 export type Token = {
@@ -65,7 +113,12 @@ export type UserCreate = {
     email: string;
     is_active?: boolean;
     is_superuser?: boolean;
-    full_name?: (string | null);
+    name: string;
+    last_name: string;
+    document_type: DocumentType;
+    document_number: string;
+    phone_number: string;
+    birth_date?: (string | null);
     password: string;
 };
 
@@ -73,14 +126,24 @@ export type UserPublic = {
     email: string;
     is_active?: boolean;
     is_superuser?: boolean;
-    full_name?: (string | null);
-    id: string;
+    name: string;
+    last_name: string;
+    document_type: DocumentType;
+    document_number: string;
+    phone_number: string;
+    birth_date?: (string | null);
+    id: number;
 };
 
 export type UserRegister = {
     email: string;
     password: string;
-    full_name?: (string | null);
+    name: string;
+    last_name: string;
+    document_type: DocumentType;
+    document_number: string;
+    phone_number: string;
+    birth_date?: (string | null);
 };
 
 export type UsersPublic = {
@@ -90,15 +153,23 @@ export type UsersPublic = {
 
 export type UserUpdate = {
     email?: (string | null);
-    is_active?: boolean;
-    is_superuser?: boolean;
-    full_name?: (string | null);
+    is_active?: (boolean | null);
+    is_superuser?: (boolean | null);
+    name?: (string | null);
+    last_name?: (string | null);
+    document_type?: (DocumentType | null);
+    document_number?: (string | null);
+    phone_number?: (string | null);
+    birth_date?: (string | null);
     password?: (string | null);
 };
 
 export type UserUpdateMe = {
-    full_name?: (string | null);
+    name?: (string | null);
+    last_name?: (string | null);
     email?: (string | null);
+    phone_number?: (string | null);
+    birth_date?: (string | null);
 };
 
 export type ValidationError = {
@@ -107,37 +178,67 @@ export type ValidationError = {
     type: string;
 };
 
-export type ItemsReadItemsData = {
+export type BookingsCreateBookingData = {
+    requestBody: BookingCreate;
+};
+
+export type BookingsCreateBookingResponse = (BookingRead);
+
+export type BookingsReadBookingsData = {
     limit?: number;
     skip?: number;
 };
 
-export type ItemsReadItemsResponse = (ItemsPublic);
+export type BookingsReadBookingsResponse = (Array<BookingRead>);
 
-export type ItemsCreateItemData = {
-    requestBody: ItemCreate;
+export type BookingsReadBookingData = {
+    bookingId: string;
 };
 
-export type ItemsCreateItemResponse = (ItemPublic);
+export type BookingsReadBookingResponse = (BookingRead);
 
-export type ItemsReadItemData = {
-    id: string;
+export type BookingsUpdateBookingData = {
+    bookingId: string;
+    requestBody: BookingUpdate;
 };
 
-export type ItemsReadItemResponse = (ItemPublic);
+export type BookingsUpdateBookingResponse = (BookingRead);
 
-export type ItemsUpdateItemData = {
-    id: string;
-    requestBody: ItemUpdate;
+export type BookingsDeleteBookingData = {
+    bookingId: string;
 };
 
-export type ItemsUpdateItemResponse = (ItemPublic);
+export type BookingsDeleteBookingResponse = (unknown);
 
-export type ItemsDeleteItemData = {
-    id: string;
+export type BookingsConfirmBookingData = {
+    bookingId: string;
 };
 
-export type ItemsDeleteItemResponse = (Message);
+export type BookingsConfirmBookingResponse = (BookingRead);
+
+export type BookingsCancelBookingData = {
+    bookingId: string;
+};
+
+export type BookingsCancelBookingResponse = (BookingRead);
+
+export type BookingsCheckInBookingData = {
+    bookingId: string;
+};
+
+export type BookingsCheckInBookingResponse = (BookingRead);
+
+export type BookingsCheckOutBookingData = {
+    bookingId: string;
+};
+
+export type BookingsCheckOutBookingResponse = (BookingRead);
+
+export type BookingsMarkBookingNoShowData = {
+    bookingId: string;
+};
+
+export type BookingsMarkBookingNoShowResponse = (BookingRead);
 
 export type LoginLoginAccessTokenData = {
     formData: Body_login_login_access_token;
@@ -171,9 +272,91 @@ export type PrivateCreateUserData = {
 
 export type PrivateCreateUserResponse = (UserPublic);
 
+export type RoomsCreateRoomData = {
+    requestBody: RoomCreate;
+};
+
+export type RoomsCreateRoomResponse = (RoomRead);
+
+export type RoomsReadRoomsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type RoomsReadRoomsResponse = (Array<RoomRead>);
+
+export type RoomsCheckAvailabilityData = {
+    /**
+     * Fecha de entrada
+     */
+    checkIn: string;
+    /**
+     * Fecha de salida
+     */
+    checkOut: string;
+    /**
+     * Filtrar por tipo de habitación
+     */
+    roomTypeId?: (number | null);
+};
+
+export type RoomsCheckAvailabilityResponse = (Array<RoomRead>);
+
+export type RoomsReadRoomData = {
+    roomId: number;
+};
+
+export type RoomsReadRoomResponse = (RoomRead);
+
+export type RoomsUpdateRoomData = {
+    requestBody: RoomCreate;
+    roomId: number;
+};
+
+export type RoomsUpdateRoomResponse = (RoomRead);
+
+export type RoomsDeleteRoomData = {
+    roomId: number;
+};
+
+export type RoomsDeleteRoomResponse = (unknown);
+
+export type RoomTypesCreateRoomTypeData = {
+    requestBody: RoomTypeCreate;
+};
+
+export type RoomTypesCreateRoomTypeResponse = (RoomTypeRead);
+
+export type RoomTypesReadRoomTypesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type RoomTypesReadRoomTypesResponse = (Array<RoomTypeRead>);
+
+export type RoomTypesReadRoomTypeData = {
+    roomTypeId: number;
+};
+
+export type RoomTypesReadRoomTypeResponse = (RoomTypeRead);
+
+export type RoomTypesUpdateRoomTypeData = {
+    requestBody: RoomTypeCreate;
+    roomTypeId: number;
+};
+
+export type RoomTypesUpdateRoomTypeResponse = (RoomTypeRead);
+
+export type RoomTypesDeleteRoomTypeData = {
+    roomTypeId: number;
+};
+
+export type RoomTypesDeleteRoomTypeResponse = (unknown);
+
 export type UsersReadUsersData = {
     limit?: number;
     skip?: number;
+    q?: string;
 };
 
 export type UsersReadUsersResponse = (UsersPublic);
@@ -207,23 +390,29 @@ export type UsersRegisterUserData = {
 export type UsersRegisterUserResponse = (UserPublic);
 
 export type UsersReadUserByIdData = {
-    userId: string;
+    userId: number;
 };
 
 export type UsersReadUserByIdResponse = (UserPublic);
 
 export type UsersUpdateUserData = {
     requestBody: UserUpdate;
-    userId: string;
+    userId: number;
 };
 
 export type UsersUpdateUserResponse = (UserPublic);
 
 export type UsersDeleteUserData = {
-    userId: string;
+    userId: number;
 };
 
 export type UsersDeleteUserResponse = (Message);
+
+export type UsersSearchUserByDocumentData = {
+    documentNumber: string;
+};
+
+export type UsersSearchUserByDocumentResponse = (UserPublic);
 
 export type UtilsTestEmailData = {
     emailTo: string;

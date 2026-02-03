@@ -1,11 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Full Stack FastAPI Project</title>
-    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.png" />
+    <title>Capri Doradal - Sistema de Gestión</title>
+    <meta name="description" content="Sistema de gestión hotelera para Hotel Capri Doradal - Reservas, habitaciones y administración" />
+    <meta name="theme-color" content="#1A5F4A" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="/assets/images/favicon.png" />
+    
+    <!-- Google Fonts - Preconnect para mejor rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    
+    <style>
+      /* Estilos base mientras carga la app */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #F7F4EF;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Loading spinner mientras carga React */
+      #root:empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      #root:empty::after {
+        content: "";
+        width: 40px;
+        height: 40px;
+        border: 3px solid #E8F5F1;
+        border-top-color: #1A5F4A;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

@@ -1,5 +1,38 @@
-.vscode
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+venv/
+.venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node / JS
 node_modules/
+dist/
+.npm
+.eslintcache
+
+# Project specific
+.vscode/
+.idea/
+.history/
+.cursor/
+backend/app/alembic/versions/*.pyc
+
+# Docker
+.docker/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright
 /test-results/
 /playwright-report/
 /blob-report/

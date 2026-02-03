@@ -6,10 +6,10 @@ from sqlmodel import Session
 from app.core.config import settings
 from app.core.security import verify_password
 from app.crud import create_user
-from app.models import UserCreate
+from app.models import DocumentType, UserCreate
 from app.utils import generate_password_reset_token
 from tests.utils.user import user_authentication_headers
-from tests.utils.utils import random_email, random_lower_string
+from tests.utils.utils import random_email, random_lower_string, random_phone_number
 
 
 def test_get_access_token(client: TestClient) -> None:
@@ -79,7 +79,11 @@ def test_reset_password(client: TestClient, db: Session) -> None:
 
     user_create = UserCreate(
         email=email,
-        full_name="Test User",
+        name="Test",
+        last_name="User",
+        document_type=DocumentType.CEDULA,
+        document_number=random_lower_string()[:20],
+        phone_number=random_phone_number(),
         password=password,
         is_active=True,
         is_superuser=False,

@@ -16,10 +16,26 @@ OpenAPI.TOKEN = async () => {
   return localStorage.getItem("access_token") || ""
 }
 
+const PUBLIC_ROUTES = new Set([
+  "/",
+  "/login",
+  "/signup",
+  "/recover-password",
+  "/reset-password",
+])
+
+const normalizePath = (path: string) => {
+  if (path === "/") return path
+  return path.endsWith("/") ? path.slice(0, -1) : path
+}
+
 const handleApiError = (error: Error) => {
-  if (error instanceof ApiError && [401, 403].includes(error.status)) {
+  if (error instanceof ApiError && error.status === 401) {
     localStorage.removeItem("access_token")
-    window.location.href = "/login"
+    const currentPath = normalizePath(window.location.pathname)
+    if (!PUBLIC_ROUTES.has(currentPath)) {
+      window.location.href = "/login"
+    }
   }
 }
 const queryClient = new QueryClient({

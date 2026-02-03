@@ -8,5 +8,5 @@ export interface LinkButtonProps
 
 const { withContext } = createRecipeContext({ key: "button" })
 
-// Replace "a" with your framework's link component
+// Reemplaza "a" con el componente de enlace de tu framework
 export const LinkButton = withContext<HTMLAnchorElement, LinkButtonProps>("a")

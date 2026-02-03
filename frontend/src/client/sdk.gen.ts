@@ -3,22 +3,42 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { BookingsCreateBookingData, BookingsCreateBookingResponse, BookingsReadBookingsData, BookingsReadBookingsResponse, BookingsReadBookingData, BookingsReadBookingResponse, BookingsUpdateBookingData, BookingsUpdateBookingResponse, BookingsDeleteBookingData, BookingsDeleteBookingResponse, BookingsConfirmBookingData, BookingsConfirmBookingResponse, BookingsCancelBookingData, BookingsCancelBookingResponse, BookingsCheckInBookingData, BookingsCheckInBookingResponse, BookingsCheckOutBookingData, BookingsCheckOutBookingResponse, BookingsMarkBookingNoShowData, BookingsMarkBookingNoShowResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, RoomsCreateRoomData, RoomsCreateRoomResponse, RoomsReadRoomsData, RoomsReadRoomsResponse, RoomsCheckAvailabilityData, RoomsCheckAvailabilityResponse, RoomsReadRoomData, RoomsReadRoomResponse, RoomsUpdateRoomData, RoomsUpdateRoomResponse, RoomsDeleteRoomData, RoomsDeleteRoomResponse, RoomTypesCreateRoomTypeData, RoomTypesCreateRoomTypeResponse, RoomTypesReadRoomTypesData, RoomTypesReadRoomTypesResponse, RoomTypesReadRoomTypeData, RoomTypesReadRoomTypeResponse, RoomTypesUpdateRoomTypeData, RoomTypesUpdateRoomTypeResponse, RoomTypesDeleteRoomTypeData, RoomTypesDeleteRoomTypeResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UsersSearchUserByDocumentData, UsersSearchUserByDocumentResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
-export class ItemsService {
+export class BookingsService {
     /**
-     * Read Items
-     * Retrieve items.
+     * Create Booking
+     * Crear nueva reserva.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns BookingRead Successful Response
+     * @throws ApiError
+     */
+    public static createBooking(data: BookingsCreateBookingData): CancelablePromise<BookingsCreateBookingResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/bookings/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Bookings
+     * Obtener reservas.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
-     * @returns ItemsPublic Successful Response
+     * @returns BookingRead Successful Response
      * @throws ApiError
      */
-    public static readItems(data: ItemsReadItemsData = {}): CancelablePromise<ItemsReadItemsResponse> {
+    public static readBookings(data: BookingsReadBookingsData = {}): CancelablePromise<BookingsReadBookingsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/items/',
+            url: '/api/v1/bookings/',
             query: {
                 skip: data.skip,
                 limit: data.limit
@@ -30,39 +50,19 @@ export class ItemsService {
     }
     
     /**
-     * Create Item
-     * Create new item.
+     * Read Booking
+     * Obtener reserva por ID.
      * @param data The data for the request.
-     * @param data.requestBody
-     * @returns ItemPublic Successful Response
+     * @param data.bookingId
+     * @returns BookingRead Successful Response
      * @throws ApiError
      */
-    public static createItem(data: ItemsCreateItemData): CancelablePromise<ItemsCreateItemResponse> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/v1/items/',
-            body: data.requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Read Item
-     * Get item by ID.
-     * @param data The data for the request.
-     * @param data.id
-     * @returns ItemPublic Successful Response
-     * @throws ApiError
-     */
-    public static readItem(data: ItemsReadItemData): CancelablePromise<ItemsReadItemResponse> {
+    public static readBooking(data: BookingsReadBookingData): CancelablePromise<BookingsReadBookingResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/bookings/{booking_id}',
             path: {
-                id: data.id
+                booking_id: data.bookingId
             },
             errors: {
                 422: 'Validation Error'
@@ -71,20 +71,20 @@ export class ItemsService {
     }
     
     /**
-     * Update Item
-     * Update an item.
+     * Update Booking
+     * Actualizar una reserva.
      * @param data The data for the request.
-     * @param data.id
+     * @param data.bookingId
      * @param data.requestBody
-     * @returns ItemPublic Successful Response
+     * @returns BookingRead Successful Response
      * @throws ApiError
      */
-    public static updateItem(data: ItemsUpdateItemData): CancelablePromise<ItemsUpdateItemResponse> {
+    public static updateBooking(data: BookingsUpdateBookingData): CancelablePromise<BookingsUpdateBookingResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/bookings/{booking_id}',
             path: {
-                id: data.id
+                booking_id: data.bookingId
             },
             body: data.requestBody,
             mediaType: 'application/json',
@@ -95,19 +95,129 @@ export class ItemsService {
     }
     
     /**
-     * Delete Item
-     * Delete an item.
+     * Delete Booking
+     * Eliminar una reserva.
      * @param data The data for the request.
-     * @param data.id
-     * @returns Message Successful Response
+     * @param data.bookingId
+     * @returns unknown Successful Response
      * @throws ApiError
      */
-    public static deleteItem(data: ItemsDeleteItemData): CancelablePromise<ItemsDeleteItemResponse> {
+    public static deleteBooking(data: BookingsDeleteBookingData): CancelablePromise<BookingsDeleteBookingResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/bookings/{booking_id}',
             path: {
-                id: data.id
+                booking_id: data.bookingId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Confirm Booking
+     * Confirmar una reserva pendiente.
+     * Solo superusuarios pueden confirmar reservas.
+     * @param data The data for the request.
+     * @param data.bookingId
+     * @returns BookingRead Successful Response
+     * @throws ApiError
+     */
+    public static confirmBooking(data: BookingsConfirmBookingData): CancelablePromise<BookingsConfirmBookingResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/bookings/{booking_id}/confirm',
+            path: {
+                booking_id: data.bookingId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Cancel Booking
+     * Cancelar una reserva.
+     * Los usuarios pueden cancelar sus propias reservas.
+     * @param data The data for the request.
+     * @param data.bookingId
+     * @returns BookingRead Successful Response
+     * @throws ApiError
+     */
+    public static cancelBooking(data: BookingsCancelBookingData): CancelablePromise<BookingsCancelBookingResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/bookings/{booking_id}/cancel',
+            path: {
+                booking_id: data.bookingId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Check In Booking
+     * Registrar check-in de una reserva.
+     * Solo superusuarios pueden hacer check-in.
+     * @param data The data for the request.
+     * @param data.bookingId
+     * @returns BookingRead Successful Response
+     * @throws ApiError
+     */
+    public static checkInBooking(data: BookingsCheckInBookingData): CancelablePromise<BookingsCheckInBookingResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/bookings/{booking_id}/check-in',
+            path: {
+                booking_id: data.bookingId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Check Out Booking
+     * Registrar check-out de una reserva.
+     * Solo superusuarios pueden hacer check-out.
+     * @param data The data for the request.
+     * @param data.bookingId
+     * @returns BookingRead Successful Response
+     * @throws ApiError
+     */
+    public static checkOutBooking(data: BookingsCheckOutBookingData): CancelablePromise<BookingsCheckOutBookingResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/bookings/{booking_id}/check-out',
+            path: {
+                booking_id: data.bookingId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Mark Booking No Show
+     * Marcar una reserva como no-show.
+     * Solo superusuarios pueden marcar no-show.
+     * @param data The data for the request.
+     * @param data.bookingId
+     * @returns BookingRead Successful Response
+     * @throws ApiError
+     */
+    public static markBookingNoShow(data: BookingsMarkBookingNoShowData): CancelablePromise<BookingsMarkBookingNoShowResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/bookings/{booking_id}/no-show',
+            path: {
+                booking_id: data.bookingId
             },
             errors: {
                 422: 'Validation Error'
@@ -235,13 +345,269 @@ export class PrivateService {
     }
 }
 
-export class UsersService {
+export class RoomsService {
     /**
-     * Read Users
-     * Retrieve users.
+     * Create Room
+     * Create new room.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns RoomRead Successful Response
+     * @throws ApiError
+     */
+    public static createRoom(data: RoomsCreateRoomData): CancelablePromise<RoomsCreateRoomResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/rooms/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Rooms
+     * Obtener todas las habitaciones.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @returns RoomRead Successful Response
+     * @throws ApiError
+     */
+    public static readRooms(data: RoomsReadRoomsData = {}): CancelablePromise<RoomsReadRoomsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/rooms/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Check Availability
+     * Obtener habitaciones disponibles para un rango de fechas.
+     *
+     * - **check_in**: Fecha de entrada (requerida)
+     * - **check_out**: Fecha de salida (requerida)
+     * - **room_type_id**: Filtrar por tipo de habitación (opcional)
+     *
+     * Devuelve las habitaciones que:
+     * - No están en mantenimiento (is_available=True)
+     * - No tienen reservas activas (pending, confirmed, checked_in) en el rango de fechas
+     * @param data The data for the request.
+     * @param data.checkIn Fecha de entrada
+     * @param data.checkOut Fecha de salida
+     * @param data.roomTypeId Filtrar por tipo de habitación
+     * @returns RoomRead Successful Response
+     * @throws ApiError
+     */
+    public static checkAvailability(data: RoomsCheckAvailabilityData): CancelablePromise<RoomsCheckAvailabilityResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/rooms/availability',
+            query: {
+                check_in: data.checkIn,
+                check_out: data.checkOut,
+                room_type_id: data.roomTypeId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Room
+     * Get room by ID.
+     * @param data The data for the request.
+     * @param data.roomId
+     * @returns RoomRead Successful Response
+     * @throws ApiError
+     */
+    public static readRoom(data: RoomsReadRoomData): CancelablePromise<RoomsReadRoomResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/rooms/{room_id}',
+            path: {
+                room_id: data.roomId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Room
+     * Update a room.
+     * @param data The data for the request.
+     * @param data.roomId
+     * @param data.requestBody
+     * @returns RoomRead Successful Response
+     * @throws ApiError
+     */
+    public static updateRoom(data: RoomsUpdateRoomData): CancelablePromise<RoomsUpdateRoomResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/rooms/{room_id}',
+            path: {
+                room_id: data.roomId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Room
+     * Delete a room.
+     * @param data The data for the request.
+     * @param data.roomId
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static deleteRoom(data: RoomsDeleteRoomData): CancelablePromise<RoomsDeleteRoomResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/rooms/{room_id}',
+            path: {
+                room_id: data.roomId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class RoomTypesService {
+    /**
+     * Create Room Type
+     * Create new room type.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns RoomTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static createRoomType(data: RoomTypesCreateRoomTypeData): CancelablePromise<RoomTypesCreateRoomTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/room-types/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Room Types
+     * Retrieve room types.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns RoomTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static readRoomTypes(data: RoomTypesReadRoomTypesData = {}): CancelablePromise<RoomTypesReadRoomTypesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/room-types/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Room Type
+     * Get room type by ID.
+     * @param data The data for the request.
+     * @param data.roomTypeId
+     * @returns RoomTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static readRoomType(data: RoomTypesReadRoomTypeData): CancelablePromise<RoomTypesReadRoomTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/room-types/{room_type_id}',
+            path: {
+                room_type_id: data.roomTypeId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Room Type
+     * Update a room type.
+     * @param data The data for the request.
+     * @param data.roomTypeId
+     * @param data.requestBody
+     * @returns RoomTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static updateRoomType(data: RoomTypesUpdateRoomTypeData): CancelablePromise<RoomTypesUpdateRoomTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/room-types/{room_type_id}',
+            path: {
+                room_type_id: data.roomTypeId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Room Type
+     * Delete a room type.
+     * @param data The data for the request.
+     * @param data.roomTypeId
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static deleteRoomType(data: RoomTypesDeleteRoomTypeData): CancelablePromise<RoomTypesDeleteRoomTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/room-types/{room_type_id}',
+            path: {
+                room_type_id: data.roomTypeId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class UsersService {
+    /**
+     * Read Users
+     * Obtener usuarios con búsqueda opcional.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.q Término de búsqueda (nombre, apellido, email, documento)
      * @returns UsersPublic Successful Response
      * @throws ApiError
      */
@@ -251,7 +617,8 @@ export class UsersService {
             url: '/api/v1/users/',
             query: {
                 skip: data.skip,
-                limit: data.limit
+                limit: data.limit,
+                q: data.q
             },
             errors: {
                 422: 'Validation Error'
@@ -424,6 +791,27 @@ export class UsersService {
             url: '/api/v1/users/{user_id}',
             path: {
                 user_id: data.userId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Search User By Document
+     * Search for a user by document number.
+     * @param data The data for the request.
+     * @param data.documentNumber
+     * @returns UserPublic Successful Response
+     * @throws ApiError
+     */
+    public static searchUserByDocument(data: UsersSearchUserByDocumentData): CancelablePromise<UsersSearchUserByDocumentResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/users/search-by-document/{document_number}',
+            path: {
+                document_number: data.documentNumber
             },
             errors: {
                 422: 'Validation Error'

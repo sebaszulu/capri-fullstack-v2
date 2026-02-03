@@ -1,154 +1,172 @@
-# FastAPI Project - Frontend
+# Hotel Capri Doradal - Frontend
 
-The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [TanStack Query](https://tanstack.com/query), [TanStack Router](https://tanstack.com/router) and [Chakra UI](https://chakra-ui.com/).
+El frontend está construido con [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [TanStack Query](https://tanstack.com/query), [TanStack Router](https://tanstack.com/router) y [Chakra UI](https://chakra-ui.com/).
 
-## Frontend development
+## Desarrollo del Frontend
 
-Before you begin, ensure that you have either the Node Version Manager (nvm) or Fast Node Manager (fnm) installed on your system.
+Antes de comenzar, asegúrate de tener instalado Node Version Manager (nvm) o Fast Node Manager (fnm) en tu sistema.
 
-* To install fnm follow the [official fnm guide](https://github.com/Schniz/fnm#installation). If you prefer nvm, you can install it using the [official nvm guide](https://github.com/nvm-sh/nvm#installing-and-updating).
+* Para instalar fnm sigue la [guía oficial de fnm](https://github.com/Schniz/fnm#installation). Si prefieres nvm, puedes instalarlo usando la [guía oficial de nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-* After installing either nvm or fnm, proceed to the `frontend` directory:
+* Después de instalar nvm o fnm, ve al directorio `frontend`:
 
 ```bash
 cd frontend
 ```
-* If the Node.js version specified in the `.nvmrc` file isn't installed on your system, you can install it using the appropriate command:
+
+* Si la versión de Node.js especificada en el archivo `.nvmrc` no está instalada en tu sistema, puedes instalarla usando el comando apropiado:
 
 ```bash
-# If using fnm
+# Si usas fnm
 fnm install
 
-# If using nvm
+# Si usas nvm
 nvm install
 ```
 
-* Once the installation is complete, switch to the installed version:
+* Una vez completada la instalación, cambia a la versión instalada:
 
 ```bash
-# If using fnm
+# Si usas fnm
 fnm use
 
-# If using nvm
+# Si usas nvm
 nvm use
 ```
 
-* Within the `frontend` directory, install the necessary NPM packages:
+* Dentro del directorio `frontend`, instala los paquetes NPM necesarios:
 
 ```bash
 npm install
 ```
 
-* And start the live server with the following `npm` script:
+* E inicia el servidor en vivo con el siguiente script de `npm`:
 
 ```bash
 npm run dev
 ```
 
-* Then open your browser at http://localhost:5173/.
+* Luego abre tu navegador en http://localhost:5173/.
 
-Notice that this live server is not running inside Docker, it's for local development, and that is the recommended workflow. Once you are happy with your frontend, you can build the frontend Docker image and start it, to test it in a production-like environment. But building the image at every change will not be as productive as running the local development server with live reload.
+Ten en cuenta que este servidor en vivo no se ejecuta dentro de Docker, es para desarrollo local, y ese es el flujo de trabajo recomendado. Una vez que estés satisfecho con tu frontend, puedes construir la imagen Docker del frontend e iniciarla, para probarla en un ambiente similar a producción. Pero construir la imagen en cada cambio no será tan productivo como ejecutar el servidor de desarrollo local con recarga en vivo.
 
-Check the file `package.json` to see other available options.
+Revisa el archivo `package.json` para ver otras opciones disponibles.
 
-### Removing the frontend
+### Eliminar el Frontend
 
-If you are developing an API-only app and want to remove the frontend, you can do it easily:
+Si estás desarrollando una app solo de API y quieres eliminar el frontend, puedes hacerlo fácilmente:
 
-* Remove the `./frontend` directory.
+* Elimina el directorio `./frontend`.
 
-* In the `docker-compose.yml` file, remove the whole service / section `frontend`.
+* En el archivo `docker-compose.yml`, elimina todo el servicio / sección `frontend`.
 
-* In the `docker-compose.override.yml` file, remove the whole service / section `frontend` and `playwright`.
+* En el archivo `docker-compose.override.yml`, elimina todo el servicio / sección `frontend` y `playwright`.
 
-Done, you have a frontend-less (api-only) app. 🤓
+Listo, tienes una app sin frontend (solo API). 🤓
 
 ---
 
-If you want, you can also remove the `FRONTEND` environment variables from:
+Si quieres, también puedes eliminar las variables de entorno de `FRONTEND` de:
 
 * `.env`
 * `./scripts/*.sh`
 
-But it would be only to clean them up, leaving them won't really have any effect either way.
+Pero sería solo para limpiarlas, dejarlas no tendrá ningún efecto de todos modos.
 
-## Generate Client
+## Generar Cliente
 
-### Automatically
+### Automáticamente
 
-* Activate the backend virtual environment.
-* From the top level project directory, run the script:
+* Activa el entorno virtual del backend.
+* Desde el directorio principal del proyecto, ejecuta el script:
 
 ```bash
 ./scripts/generate-client.sh
 ```
 
-* Commit the changes.
+* Haz commit de los cambios.
 
-### Manually
+### Manualmente
 
-* Start the Docker Compose stack.
+* Inicia el stack de Docker Compose.
 
-* Download the OpenAPI JSON file from `http://localhost/api/v1/openapi.json` and copy it to a new file `openapi.json` at the root of the `frontend` directory.
+* Descarga el archivo JSON de OpenAPI desde `http://localhost/api/v1/openapi.json` y cópialo a un nuevo archivo `openapi.json` en la raíz del directorio `frontend`.
 
-* To generate the frontend client, run:
+* Para generar el cliente del frontend, ejecuta:
 
 ```bash
 npm run generate-client
 ```
 
-* Commit the changes.
+* Haz commit de los cambios.
 
-Notice that everytime the backend changes (changing the OpenAPI schema), you should follow these steps again to update the frontend client.
+Ten en cuenta que cada vez que el backend cambie (cambiando el esquema OpenAPI), debes seguir estos pasos de nuevo para actualizar el cliente del frontend.
 
-## Using a Remote API
+## Usar una API Remota
 
-If you want to use a remote API, you can set the environment variable `VITE_API_URL` to the URL of the remote API. For example, you can set it in the `frontend/.env` file:
+Si quieres usar una API remota, puedes establecer la variable de entorno `VITE_API_URL` a la URL de la API remota. Por ejemplo, puedes establecerla en el archivo `frontend/.env`:
 
 ```env
-VITE_API_URL=https://api.my-domain.example.com
+VITE_API_URL=https://api.mi-dominio.ejemplo.com
 ```
 
-Then, when you run the frontend, it will use that URL as the base URL for the API.
+Luego, cuando ejecutes el frontend, usará esa URL como URL base para la API.
 
-## Code Structure
+## Estructura del Código
 
-The frontend code is structured as follows:
+El código del frontend está estructurado de la siguiente manera:
 
-* `frontend/src` - The main frontend code.
-* `frontend/src/assets` - Static assets.
-* `frontend/src/client` - The generated OpenAPI client.
-* `frontend/src/components` -  The different components of the frontend.
+* `frontend/src` - El código principal del frontend.
+* `frontend/src/assets` - Recursos estáticos.
+* `frontend/src/client` - El cliente OpenAPI generado.
+* `frontend/src/components` - Los diferentes componentes del frontend.
+  * `frontend/src/components/Admin` - Componentes de administración de usuarios.
+  * `frontend/src/components/Bookings` - Componentes de gestión de reservas.
+  * `frontend/src/components/Common` - Componentes comunes (Navbar, Sidebar, etc.).
+  * `frontend/src/components/Rooms` - Componentes de gestión de habitaciones.
+  * `frontend/src/components/RoomTypes` - Componentes de tipos de habitación.
+  * `frontend/src/components/UserSettings` - Componentes de configuración de usuario.
+  * `frontend/src/components/ui` - Componentes de UI personalizados de Chakra.
 * `frontend/src/hooks` - Custom hooks.
-* `frontend/src/routes` - The different routes of the frontend which include the pages.
-* `theme.tsx` - The Chakra UI custom theme.
+* `frontend/src/routes` - Las diferentes rutas del frontend que incluyen las páginas.
+* `theme.tsx` - El tema personalizado de Chakra UI.
 
-## End-to-End Testing with Playwright
+## Tests End-to-End con Playwright
 
-The frontend includes initial end-to-end tests using Playwright. To run the tests, you need to have the Docker Compose stack running. Start the stack with the following command:
+El frontend incluye tests end-to-end iniciales usando Playwright. Para ejecutar los tests, necesitas tener el stack de Docker Compose funcionando. Inicia el stack con el siguiente comando:
 
 ```bash
 docker compose up -d --wait backend
 ```
 
-Then, you can run the tests with the following command:
+Luego, puedes ejecutar los tests con el siguiente comando:
 
 ```bash
 npx playwright test
 ```
 
-You can also run your tests in UI mode to see the browser and interact with it running:
+También puedes ejecutar tus tests en modo UI para ver el navegador e interactuar con él:
 
 ```bash
 npx playwright test --ui
 ```
 
-To stop and remove the Docker Compose stack and clean the data created in tests, use the following command:
+Para detener y eliminar el stack de Docker Compose y limpiar los datos creados en los tests, usa el siguiente comando:
 
 ```bash
 docker compose down -v
 ```
 
-To update the tests, navigate to the tests directory and modify the existing test files or add new ones as needed.
+Para actualizar los tests, navega al directorio de tests y modifica los archivos de test existentes o añade nuevos según sea necesario.
 
-For more information on writing and running Playwright tests, refer to the official [Playwright documentation](https://playwright.dev/docs/intro).
+Para más información sobre escribir y ejecutar tests de Playwright, consulta la [documentación oficial de Playwright](https://playwright.dev/docs/intro).
+
+## Scripts Disponibles
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia el servidor de desarrollo |
+| `npm run build` | Construye la aplicación para producción |
+| `npm run lint` | Ejecuta el linter (Biome) |
+| `npm run preview` | Previsualiza la build de producción |
+| `npm run generate-client` | Genera el cliente API desde OpenAPI |

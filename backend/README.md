@@ -1,172 +1,179 @@
-# FastAPI Project - Backend
+# Hotel Capri Doradal - Backend
 
-## Requirements
+## Requisitos
 
-* [Docker](https://www.docker.com/).
-* [uv](https://docs.astral.sh/uv/) for Python package and environment management.
+* [Docker](https://www.docker.com/)
+* [uv](https://docs.astral.sh/uv/) para gestión de paquetes y entornos de Python.
 
 ## Docker Compose
 
-Start the local development environment with Docker Compose following the guide in [../development.md](../development.md).
+Inicia el entorno de desarrollo local con Docker Compose siguiendo la guía en [../development.md](../development.md).
 
-## General Workflow
+## Flujo de Trabajo General
 
-By default, the dependencies are managed with [uv](https://docs.astral.sh/uv/), go there and install it.
+Por defecto, las dependencias se gestionan con [uv](https://docs.astral.sh/uv/), visita la página e instálalo.
 
-From `./backend/` you can install all the dependencies with:
+Desde `./backend/` puedes instalar todas las dependencias con:
 
 ```console
 $ uv sync
 ```
 
-Then you can activate the virtual environment with:
+Luego puedes activar el entorno virtual con:
 
 ```console
 $ source .venv/bin/activate
 ```
 
-Make sure your editor is using the correct Python virtual environment, with the interpreter at `backend/.venv/bin/python`.
+Asegúrate de que tu editor esté usando el entorno virtual de Python correcto, con el intérprete en `backend/.venv/bin/python`.
 
-Modify or add SQLModel models for data and SQL tables in `./backend/app/models.py`, API endpoints in `./backend/app/api/`, CRUD (Create, Read, Update, Delete) utils in `./backend/app/crud.py`.
+Modifica o añade modelos SQLModel para datos y tablas SQL en `./backend/app/models.py`, endpoints de API en `./backend/app/api/`, utilidades CRUD (Crear, Leer, Actualizar, Eliminar) en `./backend/app/crud.py`.
 
 ## VS Code
 
-There are already configurations in place to run the backend through the VS Code debugger, so that you can use breakpoints, pause and explore variables, etc.
+Ya hay configuraciones listas para ejecutar el backend a través del depurador de VS Code, para que puedas usar puntos de interrupción, pausar y explorar variables, etc.
 
-The setup is also already configured so you can run the tests through the VS Code Python tests tab.
+La configuración también está lista para que puedas ejecutar los tests a través de la pestaña de tests de Python de VS Code.
 
 ## Docker Compose Override
 
-During development, you can change Docker Compose settings that will only affect the local development environment in the file `docker-compose.override.yml`.
+Durante el desarrollo, puedes cambiar configuraciones de Docker Compose que solo afectarán al entorno de desarrollo local en el archivo `docker-compose.override.yml`.
 
-The changes to that file only affect the local development environment, not the production environment. So, you can add "temporary" changes that help the development workflow.
+Los cambios en ese archivo solo afectan al entorno de desarrollo local, no al entorno de producción. Así puedes añadir cambios "temporales" que ayuden al flujo de trabajo de desarrollo.
 
-For example, the directory with the backend code is synchronized in the Docker container, copying the code you change live to the directory inside the container. That allows you to test your changes right away, without having to build the Docker image again. It should only be done during development, for production, you should build the Docker image with a recent version of the backend code. But during development, it allows you to iterate very fast.
+Por ejemplo, el directorio con el código del backend está sincronizado en el contenedor Docker, copiando el código que cambias en vivo al directorio dentro del contenedor. Eso te permite probar tus cambios inmediatamente, sin tener que reconstruir la imagen de Docker. Esto solo debe hacerse durante el desarrollo; para producción, debes construir la imagen de Docker con una versión reciente del código del backend. Pero durante el desarrollo, te permite iterar muy rápido.
 
-There is also a command override that runs `fastapi run --reload` instead of the default `fastapi run`. It starts a single server process (instead of multiple, as would be for production) and reloads the process whenever the code changes. Have in mind that if you have a syntax error and save the Python file, it will break and exit, and the container will stop. After that, you can restart the container by fixing the error and running again:
-
-```console
-$ docker compose watch
-```
-
-There is also a commented out `command` override, you can uncomment it and comment the default one. It makes the backend container run a process that does "nothing", but keeps the container alive. That allows you to get inside your running container and execute commands inside, for example a Python interpreter to test installed dependencies, or start the development server that reloads when it detects changes.
-
-To get inside the container with a `bash` session you can start the stack with:
+También hay un comando override que ejecuta `fastapi run --reload` en lugar del predeterminado `fastapi run`. Inicia un solo proceso de servidor (en lugar de múltiples, como sería para producción) y recarga el proceso cada vez que el código cambia. Ten en cuenta que si tienes un error de sintaxis y guardas el archivo Python, se romperá y saldrá, y el contenedor se detendrá. Después de eso, puedes reiniciar el contenedor corrigiendo el error y ejecutando de nuevo:
 
 ```console
 $ docker compose watch
 ```
 
-and then in another terminal, `exec` inside the running container:
+También hay un comando `command` comentado, puedes descomentarlo y comentar el predeterminado. Hace que el contenedor del backend ejecute un proceso que no hace "nada", pero mantiene el contenedor vivo. Eso te permite entrar en tu contenedor en ejecución y ejecutar comandos dentro, por ejemplo un intérprete de Python para probar dependencias instaladas, o iniciar el servidor de desarrollo que recarga cuando detecta cambios.
+
+Para entrar en el contenedor con una sesión `bash` puedes iniciar el stack con:
+
+```console
+$ docker compose watch
+```
+
+y luego en otra terminal, `exec` dentro del contenedor en ejecución:
 
 ```console
 $ docker compose exec backend bash
 ```
 
-You should see an output like:
+Deberías ver una salida como:
 
 ```console
 root@7f2607af31c3:/app#
 ```
 
-that means that you are in a `bash` session inside your container, as a `root` user, under the `/app` directory, this directory has another directory called "app" inside, that's where your code lives inside the container: `/app/app`.
+esto significa que estás en una sesión `bash` dentro de tu contenedor, como usuario `root`, bajo el directorio `/app`, este directorio tiene otro directorio llamado "app" dentro, ahí es donde vive tu código dentro del contenedor: `/app/app`.
 
-There you can use the `fastapi run --reload` command to run the debug live reloading server.
+Allí puedes usar el comando `fastapi run --reload` para ejecutar el servidor con recarga en vivo.
 
 ```console
 $ fastapi run --reload app/main.py
 ```
 
-...it will look like:
+...se verá así:
 
 ```console
 root@7f2607af31c3:/app# fastapi run --reload app/main.py
 ```
 
-and then hit enter. That runs the live reloading server that auto reloads when it detects code changes.
+y luego presiona enter. Eso ejecuta el servidor con recarga en vivo que se recarga automáticamente cuando detecta cambios de código.
 
-Nevertheless, if it doesn't detect a change but a syntax error, it will just stop with an error. But as the container is still alive and you are in a Bash session, you can quickly restart it after fixing the error, running the same command ("up arrow" and "Enter").
+Sin embargo, si no detecta un cambio sino un error de sintaxis, simplemente se detendrá con un error. Pero como el contenedor sigue vivo y estás en una sesión Bash, puedes reiniciarlo rápidamente después de corregir el error, ejecutando el mismo comando ("flecha arriba" y "Enter").
 
-...this previous detail is what makes it useful to have the container alive doing nothing and then, in a Bash session, make it run the live reload server.
+...este detalle anterior es lo que hace útil tener el contenedor vivo sin hacer nada y luego, en una sesión Bash, hacer que ejecute el servidor con recarga en vivo.
 
-## Backend tests
+## Tests del Backend
 
-To test the backend run:
+Para probar el backend ejecuta:
 
 ```console
 $ bash ./scripts/test.sh
 ```
 
-The tests run with Pytest, modify and add tests to `./backend/tests/`.
+Los tests se ejecutan con Pytest, modifica y añade tests en `./backend/tests/`.
 
-If you use GitHub Actions the tests will run automatically.
+Si usas GitHub Actions los tests se ejecutarán automáticamente.
 
-### Test running stack
+### Ejecutar Tests con el Stack Activo
 
-If your stack is already up and you just want to run the tests, you can use:
+Si tu stack ya está activo y solo quieres ejecutar los tests, puedes usar:
 
 ```bash
 docker compose exec backend bash scripts/tests-start.sh
 ```
 
-That `/app/scripts/tests-start.sh` script just calls `pytest` after making sure that the rest of the stack is running. If you need to pass extra arguments to `pytest`, you can pass them to that command and they will be forwarded.
+Ese script `/app/scripts/tests-start.sh` simplemente llama a `pytest` después de asegurarse de que el resto del stack está funcionando. Si necesitas pasar argumentos extra a `pytest`, puedes pasarlos a ese comando y serán reenviados.
 
-For example, to stop on first error:
+Por ejemplo, para detenerse en el primer error:
 
 ```bash
 docker compose exec backend bash scripts/tests-start.sh -x
 ```
 
-### Test Coverage
+### Cobertura de Tests
 
-When the tests are run, a file `htmlcov/index.html` is generated, you can open it in your browser to see the coverage of the tests.
+Cuando se ejecutan los tests, se genera un archivo `htmlcov/index.html`, puedes abrirlo en tu navegador para ver la cobertura de los tests.
 
-## Migrations
+## Migraciones
 
-As during local development your app directory is mounted as a volume inside the container, you can also run the migrations with `alembic` commands inside the container and the migration code will be in your app directory (instead of being only inside the container). So you can add it to your git repository.
+Como durante el desarrollo local tu directorio app está montado como un volumen dentro del contenedor, también puedes ejecutar las migraciones con comandos de `alembic` dentro del contenedor y el código de migración estará en tu directorio app (en lugar de estar solo dentro del contenedor). Así puedes añadirlo a tu repositorio git.
 
-Make sure you create a "revision" of your models and that you "upgrade" your database with that revision every time you change them. As this is what will update the tables in your database. Otherwise, your application will have errors.
+Asegúrate de crear una "revisión" de tus modelos y que "actualices" tu base de datos con esa revisión cada vez que los cambies. Esto es lo que actualizará las tablas en tu base de datos. De lo contrario, tu aplicación tendrá errores.
 
-* Start an interactive session in the backend container:
+* Inicia una sesión interactiva en el contenedor del backend:
 
 ```console
 $ docker compose exec backend bash
 ```
 
-* Alembic is already configured to import your SQLModel models from `./backend/app/models.py`.
+* Alembic ya está configurado para importar tus modelos SQLModel desde `./backend/app/models.py`.
 
-* After changing a model (for example, adding a column), inside the container, create a revision, e.g.:
+* Después de cambiar un modelo (por ejemplo, añadir una columna), dentro del contenedor, crea una revisión, ej.:
 
 ```console
-$ alembic revision --autogenerate -m "Add column last_name to User model"
+$ alembic revision --autogenerate -m "Añadir columna apellido al modelo Usuario"
 ```
 
-* Commit to the git repository the files generated in the alembic directory.
+* Haz commit al repositorio git de los archivos generados en el directorio alembic.
 
-* After creating the revision, run the migration in the database (this is what will actually change the database):
+* Después de crear la revisión, ejecuta la migración en la base de datos (esto es lo que realmente cambiará la base de datos):
 
 ```console
 $ alembic upgrade head
 ```
 
-If you don't want to use migrations at all, uncomment the lines in the file at `./backend/app/core/db.py` that end in:
+Si no quieres usar migraciones en absoluto, descomenta las líneas en el archivo `./backend/app/core/db.py` que terminan en:
 
 ```python
 SQLModel.metadata.create_all(engine)
 ```
 
-and comment the line in the file `scripts/prestart.sh` that contains:
+y comenta la línea en el archivo `scripts/prestart.sh` que contiene:
 
 ```console
 $ alembic upgrade head
 ```
 
-If you don't want to start with the default models and want to remove them / modify them, from the beginning, without having any previous revision, you can remove the revision files (`.py` Python files) under `./backend/app/alembic/versions/`. And then create a first migration as described above.
+Si no quieres empezar con los modelos predeterminados y quieres eliminarlos / modificarlos, desde el principio, sin tener ninguna revisión previa, puedes eliminar los archivos de revisión (archivos `.py` de Python) bajo `./backend/app/alembic/versions/`. Y luego crear una primera migración como se describió anteriormente.
 
-## Email Templates
+## Plantillas de Email
 
-The email templates are in `./backend/app/email-templates/`. Here, there are two directories: `build` and `src`. The `src` directory contains the source files that are used to build the final email templates. The `build` directory contains the final email templates that are used by the application.
+Las plantillas de email están en `./backend/app/email-templates/`. Aquí hay dos directorios: `build` y `src`. El directorio `src` contiene los archivos fuente que se usan para construir las plantillas de email finales. El directorio `build` contiene las plantillas de email finales que usa la aplicación.
 
-Before continuing, ensure you have the [MJML extension](https://marketplace.visualstudio.com/items?itemName=attilabuti.vscode-mjml) installed in your VS Code.
+Antes de continuar, asegúrate de tener instalada la [extensión MJML](https://marketplace.visualstudio.com/items?itemName=attilabuti.vscode-mjml) en tu VS Code.
 
-Once you have the MJML extension installed, you can create a new email template in the `src` directory. After creating the new email template and with the `.mjml` file open in your editor, open the command palette with `Ctrl+Shift+P` and search for `MJML: Export to HTML`. This will convert the `.mjml` file to a `.html` file and now you can save it in the build directory.
+Una vez que tengas instalada la extensión MJML, puedes crear una nueva plantilla de email en el directorio `src`. Después de crear la nueva plantilla de email y con el archivo `.mjml` abierto en tu editor, abre la paleta de comandos con `Ctrl+Shift+P` y busca `MJML: Export to HTML`. Esto convertirá el archivo `.mjml` a un archivo `.html` y ahora puedes guardarlo en el directorio build.
+
+## Credenciales por Defecto
+
+- **Email:** `admin@example.com`
+- **Contraseña:** `changethis`
+
+> ⚠️ **Importante:** Cambia estas credenciales antes de desplegar a producción.

@@ -8,8 +8,8 @@ from sqlalchemy import engine_from_config, pool
 # access to the values within the .ini file in use.
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
+# Interpretar el archivo de configuración para logging de Python.
+# Esta línea configura básicamente los loggers.
 fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
@@ -18,7 +18,8 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 
-from app.models import SQLModel  # noqa
+from sqlmodel import SQLModel
+import app.models # noqa
 from app.core.config import settings # noqa
 
 target_metadata = SQLModel.metadata

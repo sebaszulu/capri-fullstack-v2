@@ -16,7 +16,7 @@ import { FaExchangeAlt } from "react-icons/fa"
 import { type UserPublic, UsersService, type UserUpdate } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
-import { emailPattern, handleError } from "@/utils"
+import { emailPattern, getErrorMessage } from "@/utils"
 import { Checkbox } from "../ui/checkbox"
 import {
   DialogBody,
@@ -39,7 +39,7 @@ interface UserUpdateForm extends UserUpdate {
 const EditUser = ({ user }: EditUserProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
-  const { showSuccessToast } = useCustomToast()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
   const {
     control,
     register,
@@ -57,12 +57,12 @@ const EditUser = ({ user }: EditUserProps) => {
     mutationFn: (data: UserUpdateForm) =>
       UsersService.updateUser({ userId: user.id, requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User updated successfully.")
+      showSuccessToast("Usuario actualizado exitosamente.")
       reset()
       setIsOpen(false)
     },
     onError: (err: ApiError) => {
-      handleError(err)
+      showErrorToast(getErrorMessage(err))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
@@ -86,58 +86,75 @@ const EditUser = ({ user }: EditUserProps) => {
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm">
           <FaExchangeAlt fontSize="16px" />
-          Edit User
+          Editar Usuario
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
+            <DialogTitle>Editar Usuario</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Text mb={4}>Update the user details below.</Text>
+            <Text mb={4}>
+              Actualiza los detalles del usuario a continuación.
+            </Text>
             <VStack gap={4}>
               <Field
                 required
                 invalid={!!errors.email}
                 errorText={errors.email?.message}
-                label="Email"
+                label="Correo"
               >
                 <Input
                   {...register("email", {
-                    required: "Email is required",
+                    required: "El correo es requerido",
                     pattern: emailPattern,
                   })}
-                  placeholder="Email"
+                  placeholder="Correo electrónico"
                   type="email"
                 />
               </Field>
 
-              <Field
-                invalid={!!errors.full_name}
-                errorText={errors.full_name?.message}
-                label="Full Name"
-              >
-                <Input
-                  {...register("full_name")}
-                  placeholder="Full name"
-                  type="text"
-                />
-              </Field>
+              <Flex gap={4} w="full">
+                <Field
+                  required
+                  invalid={!!errors.name}
+                  errorText={errors.name?.message}
+                  label="Nombre"
+                >
+                  <Input
+                    {...register("name", { required: "Requerido" })}
+                    placeholder="Nombre"
+                    type="text"
+                  />
+                </Field>
+                <Field
+                  required
+                  invalid={!!errors.last_name}
+                  errorText={errors.last_name?.message}
+                  label="Apellido"
+                >
+                  <Input
+                    {...register("last_name", { required: "Requerido" })}
+                    placeholder="Apellido"
+                    type="text"
+                  />
+                </Field>
+              </Flex>
 
               <Field
                 invalid={!!errors.password}
                 errorText={errors.password?.message}
-                label="Set Password"
+                label="Contraseña"
               >
                 <Input
                   {...register("password", {
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: "La contraseña debe tener al menos 8 caracteres",
                     },
                   })}
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   type="password"
                 />
               </Field>
@@ -145,15 +162,16 @@ const EditUser = ({ user }: EditUserProps) => {
               <Field
                 invalid={!!errors.confirm_password}
                 errorText={errors.confirm_password?.message}
-                label="Confirm Password"
+                label="Confirmar Contraseña"
               >
                 <Input
                   {...register("confirm_password", {
                     validate: (value) =>
+                      !value ||
                       value === getValues().password ||
-                      "The passwords do not match",
+                      "Las contraseñas no coinciden",
                   })}
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   type="password"
                 />
               </Field>
@@ -169,7 +187,7 @@ const EditUser = ({ user }: EditUserProps) => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is superuser?
+                      ¿Es superusuario?
                     </Checkbox>
                   </Field>
                 )}
@@ -183,7 +201,7 @@ const EditUser = ({ user }: EditUserProps) => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is active?
+                      ¿Está activo?
                     </Checkbox>
                   </Field>
                 )}
@@ -198,11 +216,11 @@ const EditUser = ({ user }: EditUserProps) => {
                 colorPalette="gray"
                 disabled={isSubmitting}
               >
-                Cancel
+                Cancelar
               </Button>
             </DialogActionTrigger>
             <Button variant="solid" type="submit" loading={isSubmitting}>
-              Save
+              Guardar
             </Button>
           </DialogFooter>
           <DialogCloseTrigger />

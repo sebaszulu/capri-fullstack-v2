@@ -9,8 +9,8 @@ type OptionsType = {
 }
 
 const fillForm = async (page: Page, email: string, password: string) => {
-  await page.getByPlaceholder("Email").fill(email)
-  await page.getByPlaceholder("Password", { exact: true }).fill(password)
+  await page.getByPlaceholder("Correo electrónico").fill(email)
+  await page.getByPlaceholder("Contraseña").fill(password)
 }
 
 const verifyInput = async (
@@ -27,21 +27,23 @@ const verifyInput = async (
 test("Inputs are visible, empty and editable", async ({ page }) => {
   await page.goto("/login")
 
-  await verifyInput(page, "Email")
-  await verifyInput(page, "Password", { exact: true })
+  await verifyInput(page, "Correo electrónico")
+  await verifyInput(page, "Contraseña")
 })
 
 test("Log In button is visible", async ({ page }) => {
   await page.goto("/login")
 
-  await expect(page.getByRole("button", { name: "Log In" })).toBeVisible()
+  await expect(
+    page.getByRole("button", { name: "Iniciar Sesión" }),
+  ).toBeVisible()
 })
 
 test("Forgot Password link is visible", async ({ page }) => {
   await page.goto("/login")
 
   await expect(
-    page.getByRole("link", { name: "Forgot password?" }),
+    page.getByRole("link", { name: "¿Olvidaste tu contraseña?" }),
   ).toBeVisible()
 })
 
@@ -49,22 +51,20 @@ test("Log in with valid email and password ", async ({ page }) => {
   await page.goto("/login")
 
   await fillForm(page, firstSuperuser, firstSuperuserPassword)
-  await page.getByRole("button", { name: "Log In" }).click()
+  await page.getByRole("button", { name: "Iniciar Sesión" }).click()
 
   await page.waitForURL("/")
 
-  await expect(
-    page.getByText("Welcome back, nice to see you again!"),
-  ).toBeVisible()
+  await expect(page.getByText("Bienvenido de nuevo")).toBeVisible()
 })
 
 test("Log in with invalid email", async ({ page }) => {
   await page.goto("/login")
 
   await fillForm(page, "invalidemail", firstSuperuserPassword)
-  await page.getByRole("button", { name: "Log In" }).click()
+  await page.getByRole("button", { name: "Iniciar Sesión" }).click()
 
-  await expect(page.getByText("Invalid email address")).toBeVisible()
+  await expect(page.getByText("Dirección de correo inválida")).toBeVisible()
 })
 
 test("Log in with invalid password", async ({ page }) => {
@@ -72,7 +72,7 @@ test("Log in with invalid password", async ({ page }) => {
 
   await page.goto("/login")
   await fillForm(page, firstSuperuser, password)
-  await page.getByRole("button", { name: "Log In" }).click()
+  await page.getByRole("button", { name: "Iniciar Sesión" }).click()
 
   await expect(page.getByText("Incorrect email or password")).toBeVisible()
 })
@@ -83,16 +83,14 @@ test("Successful log out", async ({ page }) => {
   await page.goto("/login")
 
   await fillForm(page, firstSuperuser, firstSuperuserPassword)
-  await page.getByRole("button", { name: "Log In" }).click()
+  await page.getByRole("button", { name: "Iniciar Sesión" }).click()
 
   await page.waitForURL("/")
 
-  await expect(
-    page.getByText("Welcome back, nice to see you again!"),
-  ).toBeVisible()
+  await expect(page.getByText("Bienvenido de nuevo")).toBeVisible()
 
   await page.getByTestId("user-menu").click()
-  await page.getByRole("menuitem", { name: "Log out" }).click()
+  await page.getByRole("menuitem", { name: "Cerrar Sesión" }).click()
   await page.waitForURL("/login")
 })
 
@@ -100,16 +98,14 @@ test("Logged-out user cannot access protected routes", async ({ page }) => {
   await page.goto("/login")
 
   await fillForm(page, firstSuperuser, firstSuperuserPassword)
-  await page.getByRole("button", { name: "Log In" }).click()
+  await page.getByRole("button", { name: "Iniciar Sesión" }).click()
 
   await page.waitForURL("/")
 
-  await expect(
-    page.getByText("Welcome back, nice to see you again!"),
-  ).toBeVisible()
+  await expect(page.getByText("Bienvenido de nuevo")).toBeVisible()
 
   await page.getByTestId("user-menu").click()
-  await page.getByRole("menuitem", { name: "Log out" }).click()
+  await page.getByRole("menuitem", { name: "Cerrar Sesión" }).click()
   await page.waitForURL("/login")
 
   await page.goto("/settings")

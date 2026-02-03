@@ -17,12 +17,12 @@ import {
 } from "@/components/ui/dialog"
 import useAuth from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
+import { getErrorMessage } from "@/utils"
 
 const DeleteConfirmation = () => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
-  const { showSuccessToast } = useCustomToast()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -32,12 +32,12 @@ const DeleteConfirmation = () => {
   const mutation = useMutation({
     mutationFn: () => UsersService.deleteUserMe(),
     onSuccess: () => {
-      showSuccessToast("Your account has been successfully deleted")
+      showSuccessToast("Tu cuenta ha sido eliminada exitosamente")
       setIsOpen(false)
       logout()
     },
     onError: (err: ApiError) => {
-      handleError(err)
+      showErrorToast(getErrorMessage(err))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
@@ -58,7 +58,7 @@ const DeleteConfirmation = () => {
     >
       <DialogTrigger asChild>
         <Button variant="solid" colorPalette="red" mt={4}>
-          Delete
+          Eliminar
         </Button>
       </DialogTrigger>
 
@@ -66,14 +66,14 @@ const DeleteConfirmation = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogCloseTrigger />
           <DialogHeader>
-            <DialogTitle>Confirmation Required</DialogTitle>
+            <DialogTitle>Confirmación Requerida</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Text mb={4}>
-              All your account data will be{" "}
-              <strong>permanently deleted.</strong> If you are sure, please
-              click <strong>"Confirm"</strong> to proceed. This action cannot be
-              undone.
+              Todos los datos de tu cuenta serán{" "}
+              <strong>eliminados permanentemente.</strong> Si estás seguro, por
+              favor haz clic en <strong>"Confirmar"</strong> para continuar.
+              Esta acción no se puede deshacer.
             </Text>
           </DialogBody>
 
@@ -85,7 +85,7 @@ const DeleteConfirmation = () => {
                   colorPalette="gray"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  Cancelar
                 </Button>
               </DialogActionTrigger>
               <Button
@@ -94,7 +94,7 @@ const DeleteConfirmation = () => {
                 type="submit"
                 loading={isSubmitting}
               >
-                Delete
+                Confirmar
               </Button>
             </ButtonGroup>
           </DialogFooter>

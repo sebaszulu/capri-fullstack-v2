@@ -14,7 +14,7 @@ import { FaPlus } from "react-icons/fa"
 import { type UserCreate, UsersService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
-import { emailPattern, handleError } from "@/utils"
+import { emailPattern, getErrorMessage } from "@/utils"
 import { Checkbox } from "../ui/checkbox"
 import {
   DialogBody,
@@ -34,7 +34,7 @@ interface UserCreateForm extends UserCreate {
 const AddUser = () => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
-  const { showSuccessToast } = useCustomToast()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
   const {
     control,
     register,
@@ -47,9 +47,13 @@ const AddUser = () => {
     criteriaMode: "all",
     defaultValues: {
       email: "",
-      full_name: "",
+      name: "",
+      last_name: "",
       password: "",
       confirm_password: "",
+      document_type: "Cédula",
+      document_number: "",
+      phone_number: "",
       is_superuser: false,
       is_active: false,
     },
@@ -59,12 +63,12 @@ const AddUser = () => {
     mutationFn: (data: UserCreate) =>
       UsersService.createUser({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("User created successfully.")
+      showSuccessToast("Usuario creado exitosamente.")
       reset()
       setIsOpen(false)
     },
     onError: (err: ApiError) => {
-      handleError(err)
+      showErrorToast(getErrorMessage(err))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
@@ -85,44 +89,112 @@ const AddUser = () => {
       <DialogTrigger asChild>
         <Button value="add-user" my={4}>
           <FaPlus fontSize="16px" />
-          Add User
+          Agregar Usuario
         </Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Add User</DialogTitle>
+            <DialogTitle>Agregar Usuario</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Text mb={4}>
-              Fill in the form below to add a new user to the system.
+              Completa el formulario para agregar un nuevo usuario al sistema.
             </Text>
             <VStack gap={4}>
               <Field
                 required
                 invalid={!!errors.email}
                 errorText={errors.email?.message}
-                label="Email"
+                label="Correo"
               >
                 <Input
                   {...register("email", {
-                    required: "Email is required",
+                    required: "El correo es requerido",
                     pattern: emailPattern,
                   })}
-                  placeholder="Email"
+                  placeholder="Correo electrónico"
                   type="email"
                 />
               </Field>
 
+              <Flex gap={4} w="full">
+                <Field
+                  required
+                  invalid={!!errors.name}
+                  errorText={errors.name?.message}
+                  label="Nombre"
+                >
+                  <Input
+                    {...register("name", { required: "Requerido" })}
+                    placeholder="Nombre"
+                    type="text"
+                  />
+                </Field>
+                <Field
+                  required
+                  invalid={!!errors.last_name}
+                  errorText={errors.last_name?.message}
+                  label="Apellido"
+                >
+                  <Input
+                    {...register("last_name", { required: "Requerido" })}
+                    placeholder="Apellido"
+                    type="text"
+                  />
+                </Field>
+              </Flex>
+
+              <Flex gap={4} w="full">
+                <Field required label="Tipo Documento">
+                  <select
+                    {...register("document_type", { required: "Requerido" })}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      borderRadius: "6px",
+                      border: "1px solid var(--chakra-colors-border)",
+                      background: "transparent",
+                    }}
+                  >
+                    <option value="Cédula">Cédula</option>
+                    <option value="Tarjeta de identidad">
+                      Tarjeta de identidad
+                    </option>
+                    <option value="Cédula de extranjería">
+                      Cédula de extranjería
+                    </option>
+                    <option value="Pasaporte">Pasaporte</option>
+                  </select>
+                </Field>
+                <Field
+                  required
+                  invalid={!!errors.document_number}
+                  errorText={errors.document_number?.message}
+                  label="Número Documento"
+                >
+                  <Input
+                    {...register("document_number", { required: "Requerido" })}
+                    placeholder="Número"
+                    type="text"
+                  />
+                </Field>
+              </Flex>
+
               <Field
-                invalid={!!errors.full_name}
-                errorText={errors.full_name?.message}
-                label="Full Name"
+                required
+                invalid={!!errors.phone_number}
+                errorText={errors.phone_number?.message}
+                label="Teléfono"
               >
                 <Input
-                  {...register("full_name")}
-                  placeholder="Full name"
-                  type="text"
+                  {...register("phone_number", {
+                    required: "El teléfono es requerido",
+                    minLength: { value: 10, message: "Mínimo 10 dígitos" },
+                    maxLength: { value: 10, message: "Máximo 10 dígitos" },
+                  })}
+                  placeholder="Teléfono (10 dígitos)"
+                  type="tel"
                 />
               </Field>
 
@@ -130,17 +202,17 @@ const AddUser = () => {
                 required
                 invalid={!!errors.password}
                 errorText={errors.password?.message}
-                label="Set Password"
+                label="Contraseña"
               >
                 <Input
                   {...register("password", {
-                    required: "Password is required",
+                    required: "La contraseña es requerida",
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: "La contraseña debe tener al menos 8 caracteres",
                     },
                   })}
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   type="password"
                 />
               </Field>
@@ -149,16 +221,16 @@ const AddUser = () => {
                 required
                 invalid={!!errors.confirm_password}
                 errorText={errors.confirm_password?.message}
-                label="Confirm Password"
+                label="Confirmar Contraseña"
               >
                 <Input
                   {...register("confirm_password", {
-                    required: "Please confirm your password",
+                    required: "Por favor confirma tu contraseña",
                     validate: (value) =>
                       value === getValues().password ||
-                      "The passwords do not match",
+                      "Las contraseñas no coinciden",
                   })}
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   type="password"
                 />
               </Field>
@@ -174,7 +246,7 @@ const AddUser = () => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is superuser?
+                      ¿Es superusuario?
                     </Checkbox>
                   </Field>
                 )}
@@ -188,7 +260,7 @@ const AddUser = () => {
                       checked={field.value}
                       onCheckedChange={({ checked }) => field.onChange(checked)}
                     >
-                      Is active?
+                      ¿Está activo?
                     </Checkbox>
                   </Field>
                 )}
@@ -203,7 +275,7 @@ const AddUser = () => {
                 colorPalette="gray"
                 disabled={isSubmitting}
               >
-                Cancel
+                Cancelar
               </Button>
             </DialogActionTrigger>
             <Button
@@ -212,7 +284,7 @@ const AddUser = () => {
               disabled={!isValid}
               loading={isSubmitting}
             >
-              Save
+              Guardar
             </Button>
           </DialogFooter>
         </form>

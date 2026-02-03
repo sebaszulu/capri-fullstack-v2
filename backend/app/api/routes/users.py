@@ -1,8 +1,8 @@
-import uuid
+
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import col, delete, func, select
+from sqlmodel import col, delete, func, select, or_
 
 from app import crud
 from app.api.deps import (
@@ -13,7 +13,7 @@ from app.api.deps import (
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
 from app.models import (
-    Item,
+
     Message,
     UpdatePassword,
     User,
@@ -26,7 +26,7 @@ from app.models import (
 )
 from app.utils import generate_new_account_email, send_email
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(tags=["users"])
 
 
 @router.get(
@@ -34,15 +34,37 @@ router = APIRouter(prefix="/users", tags=["users"])
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UsersPublic,
 )
-def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+def read_users(
+    session: SessionDep, 
+    skip: int = 0, 
+    limit: int = 100,
+    q: str | None = None
+) -> Any:
     """
-    Retrieve users.
+    Obtener usuarios con búsqueda opcional.
+    El parámetro 'q' busca en nombre, apellido, email y documento.
     """
-
-    count_statement = select(func.count()).select_from(User)
-    count = session.exec(count_statement).one()
-
-    statement = select(User).offset(skip).limit(limit)
+    # Construir la consulta base
+    base_query = select(User)
+    count_query = select(func.count()).select_from(User)
+    
+    # Si hay término de búsqueda, filtrar
+    if q and q.strip():
+        search_term = f"%{q.strip().lower()}%"
+        search_filter = or_(
+            func.lower(func.coalesce(User.name, "")).like(search_term),
+            func.lower(func.coalesce(User.last_name, "")).like(search_term),
+            func.lower(User.email).like(search_term),
+            func.coalesce(User.document_number, "").like(f"%{q.strip()}%")
+        )
+        base_query = base_query.where(search_filter)
+        count_query = count_query.where(search_filter)
+    
+    # Obtener conteo total (con o sin filtro)
+    count = session.exec(count_query).one()
+    
+    # Obtener usuarios paginados
+    statement = base_query.offset(skip).limit(limit)
     users = session.exec(statement).all()
 
     return UsersPublic(data=users, count=count)
@@ -157,7 +179,7 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
 
 @router.get("/{user_id}", response_model=UserPublic)
 def read_user_by_id(
-    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
+    user_id: int, session: SessionDep, current_user: CurrentUser
 ) -> Any:
     """
     Get a specific user by id.
@@ -181,7 +203,7 @@ def read_user_by_id(
 def update_user(
     *,
     session: SessionDep,
-    user_id: uuid.UUID,
+    user_id: int,
     user_in: UserUpdate,
 ) -> Any:
     """
@@ -207,7 +229,7 @@ def update_user(
 
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
 def delete_user(
-    session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID
+    session: SessionDep, current_user: CurrentUser, user_id: int
 ) -> Message:
     """
     Delete a user.
@@ -219,8 +241,19 @@ def delete_user(
         raise HTTPException(
             status_code=403, detail="Super users are not allowed to delete themselves"
         )
-    statement = delete(Item).where(col(Item.owner_id) == user_id)
-    session.exec(statement)  # type: ignore
+
     session.delete(user)
     session.commit()
     return Message(message="User deleted successfully")
+@router.get("/search-by-document/{document_number}", response_model=UserPublic)
+def search_user_by_document(
+    document_number: str, session: SessionDep, current_user: CurrentUser
+) -> Any:
+    """
+    Search for a user by document number.
+    """
+    statement = select(User).where(User.document_number == document_number)
+    user = session.exec(statement).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user

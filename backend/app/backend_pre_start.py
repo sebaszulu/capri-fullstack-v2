@@ -22,7 +22,7 @@ wait_seconds = 1
 def init(db_engine: Engine) -> None:
     try:
         with Session(db_engine) as session:
-            # Try to create session to check if DB is awake
+            # Intentar crear sesión para verificar si la BD está activa
             session.exec(select(1))
     except Exception as e:
         logger.error(e)

@@ -14,9 +14,14 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
-import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
-import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
+import { Route as LayoutRoomsRouteImport } from './routes/_layout/rooms'
+import { Route as LayoutRoomTypesRouteImport } from './routes/_layout/room-types'
+import { Route as LayoutMyBookingsRouteImport } from './routes/_layout.my-bookings'
+import { Route as LayoutDashboardRouteImport } from './routes/_layout/dashboard'
+import { Route as LayoutBookingsRouteImport } from './routes/_layout/bookings'
+import { Route as LayoutBookRouteImport } from './routes/_layout.book'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 
 const SignupRoute = SignupRouteImport.update({
@@ -43,19 +48,44 @@ const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LayoutIndexRoute = LayoutIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutItemsRoute = LayoutItemsRouteImport.update({
-  id: '/items',
-  path: '/items',
+const LayoutRoomsRoute = LayoutRoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutRoomTypesRoute = LayoutRoomTypesRouteImport.update({
+  id: '/room-types',
+  path: '/room-types',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutMyBookingsRoute = LayoutMyBookingsRouteImport.update({
+  id: '/my-bookings',
+  path: '/my-bookings',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutDashboardRoute = LayoutDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutBookingsRoute = LayoutBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutBookRoute = LayoutBookRouteImport.update({
+  id: '/book',
+  path: '/book',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
@@ -65,72 +95,103 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/items': typeof LayoutItemsRoute
+  '/book': typeof LayoutBookRoute
+  '/bookings': typeof LayoutBookingsRoute
+  '/dashboard': typeof LayoutDashboardRoute
+  '/my-bookings': typeof LayoutMyBookingsRoute
+  '/room-types': typeof LayoutRoomTypesRoute
+  '/rooms': typeof LayoutRoomsRoute
   '/settings': typeof LayoutSettingsRoute
-  '/': typeof LayoutIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/items': typeof LayoutItemsRoute
+  '/book': typeof LayoutBookRoute
+  '/bookings': typeof LayoutBookingsRoute
+  '/dashboard': typeof LayoutDashboardRoute
+  '/my-bookings': typeof LayoutMyBookingsRoute
+  '/room-types': typeof LayoutRoomTypesRoute
+  '/rooms': typeof LayoutRoomsRoute
   '/settings': typeof LayoutSettingsRoute
-  '/': typeof LayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_layout': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/items': typeof LayoutItemsRoute
+  '/_layout/book': typeof LayoutBookRoute
+  '/_layout/bookings': typeof LayoutBookingsRoute
+  '/_layout/dashboard': typeof LayoutDashboardRoute
+  '/_layout/my-bookings': typeof LayoutMyBookingsRoute
+  '/_layout/room-types': typeof LayoutRoomTypesRoute
+  '/_layout/rooms': typeof LayoutRoomsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
-  '/_layout/': typeof LayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/login'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
+    | '/book'
+    | '/bookings'
+    | '/dashboard'
+    | '/my-bookings'
+    | '/room-types'
+    | '/rooms'
     | '/settings'
-    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/login'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/items'
+    | '/book'
+    | '/bookings'
+    | '/dashboard'
+    | '/my-bookings'
+    | '/room-types'
+    | '/rooms'
     | '/settings'
-    | '/'
   id:
     | '__root__'
+    | '/'
     | '/_layout'
     | '/login'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
-    | '/_layout/items'
+    | '/_layout/book'
+    | '/_layout/bookings'
+    | '/_layout/dashboard'
+    | '/_layout/my-bookings'
+    | '/_layout/room-types'
+    | '/_layout/rooms'
     | '/_layout/settings'
-    | '/_layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   LayoutRoute: typeof LayoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
@@ -175,12 +236,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_layout/': {
-      id: '/_layout/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexRouteImport
-      parentRoute: typeof LayoutRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_layout/settings': {
       id: '/_layout/settings'
@@ -189,11 +250,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/items': {
-      id: '/_layout/items'
-      path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof LayoutItemsRouteImport
+    '/_layout/rooms': {
+      id: '/_layout/rooms'
+      path: '/rooms'
+      fullPath: '/rooms'
+      preLoaderRoute: typeof LayoutRoomsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/room-types': {
+      id: '/_layout/room-types'
+      path: '/room-types'
+      fullPath: '/room-types'
+      preLoaderRoute: typeof LayoutRoomTypesRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/my-bookings': {
+      id: '/_layout/my-bookings'
+      path: '/my-bookings'
+      fullPath: '/my-bookings'
+      preLoaderRoute: typeof LayoutMyBookingsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/dashboard': {
+      id: '/_layout/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof LayoutDashboardRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/bookings': {
+      id: '/_layout/bookings'
+      path: '/bookings'
+      fullPath: '/bookings'
+      preLoaderRoute: typeof LayoutBookingsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/book': {
+      id: '/_layout/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof LayoutBookRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/admin': {
@@ -208,22 +304,31 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutItemsRoute: typeof LayoutItemsRoute
+  LayoutBookRoute: typeof LayoutBookRoute
+  LayoutBookingsRoute: typeof LayoutBookingsRoute
+  LayoutDashboardRoute: typeof LayoutDashboardRoute
+  LayoutMyBookingsRoute: typeof LayoutMyBookingsRoute
+  LayoutRoomTypesRoute: typeof LayoutRoomTypesRoute
+  LayoutRoomsRoute: typeof LayoutRoomsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
-  LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
-  LayoutItemsRoute: LayoutItemsRoute,
+  LayoutBookRoute: LayoutBookRoute,
+  LayoutBookingsRoute: LayoutBookingsRoute,
+  LayoutDashboardRoute: LayoutDashboardRoute,
+  LayoutMyBookingsRoute: LayoutMyBookingsRoute,
+  LayoutRoomTypesRoute: LayoutRoomTypesRoute,
+  LayoutRoomsRoute: LayoutRoomsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
-  LayoutIndexRoute: LayoutIndexRoute,
 }
 
 const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   LayoutRoute: LayoutRouteWithChildren,
   LoginRoute: LoginRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
