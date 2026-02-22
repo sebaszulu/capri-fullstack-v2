@@ -34,7 +34,7 @@ services:
       - .env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changethis}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_secure_pass_123}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-app}
 
@@ -50,16 +50,17 @@ services:
     env_file:
       - .env
     environment:
+      - PROJECT_NAME=${PROJECT_NAME:-Hotel Capri Doradal}
       - DOMAIN=${DOMAIN:-localhost}
       - FRONTEND_HOST=${FRONTEND_HOST:-http://localhost}
       - ENVIRONMENT=${ENVIRONMENT:-production}
       - POSTGRES_SERVER=db
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changethis}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_secure_pass_123}
       - POSTGRES_DB=${POSTGRES_DB:-app}
-      - SECRET_KEY=${SECRET_KEY:-changethis}
+      - SECRET_KEY=${SECRET_KEY:-capri_secret_key_random_string_8822}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER:-admin@example.com}
-      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-changethis}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-capri_admin_pass_99}
 
   backend:
     image: '${DOCKER_IMAGE_BACKEND:-capri-backend}:latest'
@@ -73,17 +74,17 @@ services:
     env_file:
       - .env
     environment:
+      - PROJECT_NAME=${PROJECT_NAME:-Hotel Capri Doradal}
       - DOMAIN=${DOMAIN:-localhost}
       - FRONTEND_HOST=${FRONTEND_HOST:-http://localhost}
       - ENVIRONMENT=${ENVIRONMENT:-production}
       - POSTGRES_SERVER=db
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changethis}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_secure_pass_123}
       - POSTGRES_DB=${POSTGRES_DB:-app}
-      - SECRET_KEY=${SECRET_KEY:-changethis}
+      - SECRET_KEY=${SECRET_KEY:-capri_secret_key_random_string_8822}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER:-admin@example.com}
-      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-changethis}
-    # Eliminamos el 'build' de aquí porque ya lo hace 'prestart' para la misma imagen
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-capri_admin_pass_99}
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`api.${DOMAIN:-localhost}`)
