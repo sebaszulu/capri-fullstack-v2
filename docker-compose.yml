@@ -23,7 +23,7 @@ services:
     image: postgres:17
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-app}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-app}" ]
       interval: 10s
       retries: 5
       start_period: 30s
@@ -39,7 +39,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-app}
 
   prestart:
-    image: '${DOCKER_IMAGE_BACKEND:-backend}:latest'
+    image: '${DOCKER_IMAGE_BACKEND:-capri-backend}:latest'
     build:
       context: ./backend
     depends_on:
@@ -62,7 +62,7 @@ services:
       - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-changethis}
 
   backend:
-    image: '${DOCKER_IMAGE_BACKEND:-backend}:latest'
+    image: '${DOCKER_IMAGE_BACKEND:-capri-backend}:latest'
     restart: always
     depends_on:
       db:
@@ -83,19 +83,15 @@ services:
       - SECRET_KEY=${SECRET_KEY:-changethis}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER:-admin@example.com}
       - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-changethis}
-    build:
-      context: ./backend
+    # Eliminamos el 'build' de aquí porque ya lo hace 'prestart' para la misma imagen
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`api.${DOMAIN:-localhost}`)
       - traefik.http.routers.backend.entrypoints=http
       - traefik.http.services.backend.loadbalancer.server.port=8000
-      # Descomenta esto para HTTPS automático una vez el dominio apunte al VPS:
-      # - traefik.http.routers.backend.tls.certresolver=le
-      # - traefik.http.routers.backend.entrypoints=https
 
   frontend:
-    image: '${DOCKER_IMAGE_FRONTEND:-frontend}:latest'
+    image: '${DOCKER_IMAGE_FRONTEND:-capri-frontend}:latest'
     restart: always
     build:
       context: ./frontend
@@ -107,9 +103,6 @@ services:
       - traefik.http.routers.frontend.rule=Host(`${DOMAIN:-localhost}`, `dashboard.${DOMAIN:-localhost}`)
       - traefik.http.routers.frontend.entrypoints=http
       - traefik.http.services.frontend.loadbalancer.server.port=80
-      # Descomenta esto para HTTPS automático una vez el dominio apunte al VPS:
-      # - traefik.http.routers.frontend.tls.certresolver=le
-      # - traefik.http.routers.frontend.entrypoints=https
 
 volumes:
   app-db-data:
