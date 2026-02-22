@@ -49,7 +49,7 @@ export const confirmPasswordRules = (
  */
 export const getErrorMessage = (err: ApiError): string => {
   const errDetail = (err.body as any)?.detail
-  let errorMessage = errDetail || "Algo salió mal."
+  let errorMessage = errDetail || err.message || "Algo salió mal."
   if (Array.isArray(errDetail) && errDetail.length > 0) {
     errorMessage = errDetail[0].msg
   }

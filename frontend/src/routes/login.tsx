@@ -23,12 +23,20 @@ export const Route = createFileRoute("/login")({
   component: Login,
   beforeLoad: async () => {
     if (isLoggedIn()) {
-      // Verificar rol del usuario para redirigir correctamente
-      const user = await UsersService.readUserMe()
-      if (user?.is_superuser) {
-        throw redirect({ to: "/dashboard" })
+      try {
+        // Verificar rol del usuario para redirigir correctamente
+        const user = await UsersService.readUserMe()
+        if (user?.is_superuser) {
+          throw redirect({ to: "/dashboard" })
+        }
+        throw redirect({ to: "/my-bookings" })
+      } catch (e) {
+        if (e instanceof Error && "status" in e && (e as any).status === 302) {
+          throw e
+        }
+        // Si hay error (ej: token inválido), limpiar y permitir cargar el login
+        localStorage.removeItem("access_token")
       }
-      throw redirect({ to: "/my-bookings" })
     }
   },
 })
