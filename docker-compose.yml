@@ -31,10 +31,10 @@ services:
     volumes:
       - app-db-data:/var/lib/postgresql/data/pgdata
     env_file:
-      - .env
+      - .env.production
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_secure_password_99}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_db_password_2024}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-app}
 
@@ -48,20 +48,9 @@ services:
         restart: true
     command: bash scripts/prestart.sh
     env_file:
-      - .env
+      - .env.production
     environment:
-      - PROJECT_NAME=${PROJECT_NAME:-Hotel Capri Doradal}
-      - DOMAIN=${DOMAIN:-localhost}
-      - FRONTEND_HOST=${FRONTEND_HOST:-http://localhost}
-      - ENVIRONMENT=${ENVIRONMENT:-production}
       - POSTGRES_SERVER=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_secure_password_99}
-      - POSTGRES_DB=${POSTGRES_DB:-app}
-      - SECRET_KEY=${SECRET_KEY:-capri_secret_key_random_string_8822}
-      - FIRST_SUPERUSER=${FIRST_SUPERUSER:-admin@example.com}
-      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-capri_admin_pass_99}
 
   backend:
     image: '${DOCKER_IMAGE_BACKEND:-capri-backend}:latest'
@@ -73,20 +62,9 @@ services:
       prestart:
         condition: service_completed_successfully
     env_file:
-      - .env
+      - .env.production
     environment:
-      - PROJECT_NAME=${PROJECT_NAME:-Hotel Capri Doradal}
-      - DOMAIN=${DOMAIN:-localhost}
-      - FRONTEND_HOST=${FRONTEND_HOST:-http://localhost}
-      - ENVIRONMENT=${ENVIRONMENT:-production}
       - POSTGRES_SERVER=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_secure_password_99}
-      - POSTGRES_DB=${POSTGRES_DB:-app}
-      - SECRET_KEY=${SECRET_KEY:-capri_secret_key_random_string_8822}
-      - FIRST_SUPERUSER=${FIRST_SUPERUSER:-admin@example.com}
-      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-capri_admin_pass_99}
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`api.${DOMAIN:-localhost}`)
