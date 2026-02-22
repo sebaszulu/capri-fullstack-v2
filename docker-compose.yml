@@ -48,7 +48,7 @@ services:
       - .env.production
     environment:
       - POSTGRES_SERVER=db
-      - BACKEND_CORS_ORIGINS=*
+      - BACKEND_CORS_ORIGINS=http://localhost,http://localhost:3000,http://localhost:8000
 
   frontend:
     image: '${DOCKER_IMAGE_FRONTEND:-capri-frontend}:latest'
