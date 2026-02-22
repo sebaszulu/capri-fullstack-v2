@@ -34,7 +34,7 @@ services:
       - .env.production
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-capri_db_password_2024}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changethis}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-app}
 
