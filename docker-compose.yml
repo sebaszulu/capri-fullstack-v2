@@ -57,7 +57,7 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
+        - VITE_API_URL=http://93.188.160.29:8000
         - NODE_ENV=production
 
 volumes:
