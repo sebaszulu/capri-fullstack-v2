@@ -8,8 +8,6 @@ from sqlalchemy import Engine
 from sqlmodel import Session, select
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
-from app.core.db import engine
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 RUN_ID = os.getenv("AGENT_DEBUG_RUN_ID", "run-1")
@@ -26,12 +24,14 @@ def _agent_log(hypothesis_id: str, location: str, message: str, data: dict) -> N
         "timestamp": int(__import__("time").time() * 1000),
     }
     try:
+        line = json.dumps(payload)
+        print(line, flush=True)
         with open(
             "/Users/sebaszulu/Proyectos/capri-fullstack-v2/.cursor/debug-6af972.log",
             "a",
             encoding="utf-8",
         ) as f:
-            f.write(json.dumps(payload) + "\n")
+            f.write(line + "\n")
     except Exception:
         pass
 
@@ -101,6 +101,31 @@ def main() -> None:
         {"cwd": os.getcwd()},
     )
     # endregion
+    try:
+        # region agent log
+        _agent_log(
+            "H2",
+            "backend/app/backend_pre_start.py:main-import",
+            "Importing engine from app.core.db",
+            {"module": "app.core.db"},
+        )
+        # endregion
+        from app.core.db import engine
+    except Exception as e:
+        # region agent log
+        _agent_log(
+            "H2",
+            "backend/app/backend_pre_start.py:main-import-except",
+            "Failed importing engine from app.core.db",
+            {
+                "error_type": type(e).__name__,
+                "error": str(e)[:200],
+                "traceback_tail": traceback.format_exc()[-500:],
+            },
+        )
+        # endregion
+        raise
+
     init(engine)
     logger.info("Service finished initializing")
     # region agent log
