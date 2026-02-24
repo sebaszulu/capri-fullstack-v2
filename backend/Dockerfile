@@ -41,4 +41,8 @@ COPY ./tests /app/tests
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync
 
+# Ensure postgres drivers exist at runtime for prestart/alembic.
+RUN python -m pip install --no-cache-dir "psycopg2-binary>=2.9.9,<3.0.0" && \
+    python -c "import psycopg2, psycopg; print('postgres drivers ok')"
+
 CMD ["fastapi", "run", "--workers", "4", "app/main.py"]
