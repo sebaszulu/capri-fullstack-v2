@@ -58,6 +58,7 @@ services:
     env_file:
       - .env
     environment:
+      - PROJECT_NAME=${PROJECT_NAME-Hotel Capri Doradal}
       - DOMAIN=${DOMAIN-localhost}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
       - ENVIRONMENT=${ENVIRONMENT:-local}
@@ -92,6 +93,7 @@ services:
     env_file:
       - .env
     environment:
+      - PROJECT_NAME=${PROJECT_NAME-Hotel Capri Doradal}
       - DOMAIN=${DOMAIN-localhost}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
       - ENVIRONMENT=${ENVIRONMENT:-local}
