@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         # Try to find .env in multiple locations to be more robust
         env_file=(".env", "../.env", "../../.env"),
+        env_file_encoding="utf-8",
         env_ignore_empty=True,
         extra="ignore",
     )
@@ -60,7 +61,7 @@ class Settings(BaseSettings):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
         return PostgresDsn.build(
-            scheme="postgresql+psycopg",
+            scheme="postgresql",
             username=self.POSTGRES_USER,
             password=self.POSTGRES_PASSWORD,
             host=self.POSTGRES_SERVER,

@@ -1,3 +1,7 @@
+import logging
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
+
 import sentry_sdk
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
@@ -16,10 +20,32 @@ def custom_generate_unique_id(route: APIRoute) -> str:
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
     sentry_sdk.init(dsn=str(settings.SENTRY_DSN), enable_tracing=True)
 
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    logger.info("Starting up...")
+    try:
+        with Session(engine) as session:
+            init_db(session)
+        logger.info("Database initialized successfully")
+    except Exception as e:
+        logger.error(f"Error during database initialization: {e}", exc_info=True)
+        # We don't re-raise here to allow the app to start even if DB init fails,
+        # which helps in diagnosing connection issues vs startup crashes.
+    yield
+    logger.info("Shutting down...")
+
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,
+    lifespan=lifespan,
 )
 
 # Configurar todos los orígenes CORS habilitados
@@ -33,9 +59,3 @@ if settings.all_cors_origins:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
-
-
-@app.on_event("startup")
-def on_startup() -> None:
-    with Session(engine) as session:
-        init_db(session)
