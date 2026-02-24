@@ -51,7 +51,8 @@ services:
       - "5432:5432"
 
   adminer:
-    restart: "no"
+    image: adminer:latest
+    restart: always
     ports:
       - "8080:8080"
 
