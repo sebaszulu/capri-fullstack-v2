@@ -71,7 +71,7 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_API_URL=http://api.capridoradal.online
+        - VITE_API_URL=https://api.capridoradal.online
         - NODE_ENV=production
     labels:
       - traefik.enable=true
