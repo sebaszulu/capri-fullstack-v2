@@ -76,10 +76,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.constraint-label=traefik-public
-      - traefik.http.routers.frontend-http.rule=Host(`capridoradal.online`)
+      - traefik.http.routers.frontend-http.rule=Host(`capridoradal.online`) || Host(`www.capridoradal.online`)
       - traefik.http.routers.frontend-http.entrypoints=http
       - traefik.http.routers.frontend-http.middlewares=https-redirect
-      - traefik.http.routers.frontend-https.rule=Host(`capridoradal.online`)
+      - traefik.http.routers.frontend-https.rule=Host(`capridoradal.online`) || Host(`www.capridoradal.online`)
       - traefik.http.routers.frontend-https.entrypoints=https
       - traefik.http.routers.frontend-https.tls=true
       - traefik.http.routers.frontend-https.tls.certresolver=le
