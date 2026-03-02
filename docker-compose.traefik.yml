@@ -1,4 +1,18 @@
 services:
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    restart: always
+    environment:
+      # Grant Traefik read-only access to the Docker API
+      CONTAINERS: 1
+      SERVICES: 1
+      NETWORKS: 1
+      TASKS: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik-public
+
   traefik:
     image: traefik:v3.1
     ports:
@@ -7,8 +21,8 @@ services:
       # Listen on port 443, default for HTTPS
       - 443:443
     restart: always
-    environment:
-      - DOCKER_API_VERSION=1.46
+    depends_on:
+      - docker-socket-proxy
     labels:
       # Enable Traefik for this service, to make it available in the public network
       - traefik.enable=true
@@ -38,11 +52,11 @@ services:
       # Enable HTTP Basic auth, using the middleware created above
       - traefik.http.routers.traefik-dashboard-https.middlewares=admin-auth
     volumes:
-      # Add Docker as a mounted volume, so that Traefik can read the labels of other services
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       # Mount the volume to store the certificates
       - traefik-public-certificates:/certificates
     command:
+      # Connect to Docker via the socket proxy instead of directly
+      - --providers.docker.endpoint=tcp://docker-socket-proxy:2375
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
       # Do not expose all Docker services, only the ones explicitly exposed
