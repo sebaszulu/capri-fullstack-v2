@@ -1,0 +1,25 @@
+services:
+  caddy:
+    image: caddy:2
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      - EMAIL=${EMAIL?Variable not set}
+    networks:
+      - traefik-public
+
+volumes:
+  caddy-data:
+  caddy-config:
+
+
+networks:
+  traefik-public:
+    external: true

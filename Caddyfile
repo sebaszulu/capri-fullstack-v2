@@ -1,0 +1,11 @@
+{
+    email {$EMAIL}
+}
+
+capridoradal.online, www.capridoradal.online {
+    reverse_proxy capri-fullstack-v2-git-frontend-1:80
+}
+
+api.capridoradal.online {
+    reverse_proxy capri-fullstack-v2-git-backend-1:8000
+}
